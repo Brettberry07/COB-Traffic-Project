@@ -380,12 +380,6 @@ def parse_phase_timing_csv(file_path: str, plan_number: int = 25) -> Dict[str, A
     #
     # Cycle = max phase in pair 1-2 + max in pair 3-4 + max in pair 5-6 + max in pair 7-8
     #       + clearance intervals
-    # 
-    # Simplified approach: Use the offset value if available (often equals cycle length)
-    # or calculate based on ring structure
-    
-    phase_greens = list(phases.values())
-    num_phases = len(phase_greens)
     
     # Get offset from the row if it was stored
     offset_value = None
@@ -399,38 +393,36 @@ def parse_phase_timing_csv(file_path: str, plan_number: int = 25) -> Dict[str, A
     avg_yellow = np.mean(list(yellow_times.values())) if yellow_times else 4.0
     avg_red_clearance = np.mean(list(red_clearance_times.values())) if red_clearance_times else 1.0
     
-    # Estimate cycle length based on ring structure
+    # Sort phases by numeric prefix for correct ring calculation (1EBLT, 2WB, etc.)
+    def get_phase_number(phase_label):
+        match = re.match(r'^(\d+)', phase_label)
+        return int(match.group(1)) if match else 99
+    
+    sorted_phases = sorted(phases.items(), key=lambda x: get_phase_number(x[0]))
+    phase_greens = [g for _, g in sorted_phases]
+    num_phases = len(phase_greens)
+    
+    # Calculate cycle length based on dual-ring 8-phase structure
+    # Ring 1: phases 1,2,3,4 | Ring 2: phases 5,6,7,8
+    # The cycle is the MAX of ring sums (concurrent phases run together)
     if num_phases >= 8:
-        # Dual-ring 8-phase: concurrent phases run together
-        # Ring 1 phases: 0,2,4,6 (even indices = 1,3,5,7 NEMA)
-        # Ring 2 phases: 1,3,5,7 (odd indices = 2,4,6,8 NEMA)
-        # Barrier 1: max(phase 1,2) + max(phase 5,6)
-        # Barrier 2: max(phase 3,4) + max(phase 7,8)
-        # But actually the greens in CSV are sequential, so let's use a simpler approach:
-        # Cycle = (sum of first 4 phases OR sum of last 4 phases - whichever is greater)
-        #       + number of phase transitions * clearance time
-        ring1_sum = sum(phase_greens[:4])
-        ring2_sum = sum(phase_greens[4:8])
-        max_ring = max(ring1_sum, ring2_sum)
-        num_transitions = 4  # typical 4 phase changes per cycle
-        cycle_length = max_ring + num_transitions * (avg_yellow + avg_red_clearance)
+        ring1_sum = sum(phase_greens[:4])  # Phases 1-4
+        ring2_sum = sum(phase_greens[4:8]) # Phases 5-8
+        # Cycle = max ring time + clearance for 4 phase transitions
+        cycle_length = max(ring1_sum, ring2_sum) + 4 * (avg_yellow + avg_red_clearance)
+        notes.append(f'Dual-ring cycle: Ring1={ring1_sum:.0f}s, Ring2={ring2_sum:.0f}s')
     elif num_phases >= 4:
-        # 4-phase signal
-        ring_sum = sum(phase_greens[:4])
-        num_transitions = 2
-        cycle_length = ring_sum + num_transitions * (avg_yellow + avg_red_clearance)
+        # 4-phase signal: sum first 4 phases + 2 clearance intervals
+        cycle_length = sum(phase_greens[:4]) + 2 * (avg_yellow + avg_red_clearance)
     else:
         # Simple 2-phase
         cycle_length = sum(phase_greens) + 2 * (avg_yellow + avg_red_clearance)
     
-    # If offset value is available and seems reasonable, use it as a sanity check
-    # Offset often represents the cycle length in coordinated signals
-    if offset_value and offset_value > 30 and offset_value < 300:
-        # Use offset as cycle length if it's reasonable
-        # This is common in coordinated signal timing files
-        if abs(cycle_length - offset_value) > 50:
-            notes.append(f'Using offset value {offset_value}s as cycle length (computed was {cycle_length:.1f}s)')
-            cycle_length = offset_value
+    # Read offset value (for informational purposes only)
+    # NOTE: Offset is the coordination offset from master, NOT the cycle length!
+    # We should NOT substitute offset for cycle length.
+    if offset_value and offset_value > 0:
+        notes.append(f'Coordination offset: {offset_value:.0f}s')
     
     if cycle_length <= 0:
         return {
@@ -577,54 +569,86 @@ def parse_volume_csv(file_path: str, aggregation: str = 'peak_hour') -> Dict[str
                 format='%m/%d/%Y %H%M',
                 errors='coerce'
             )
-            df = df_valid.dropna(subset=['DateTime']).copy()
-            df = df.sort_values('DateTime')
+            df = df_valid.dropna(subset=['DateTime']).sort_values('DateTime').copy()
+            df['DateOnly'] = df['DateTime'].dt.date
+            df['Hour'] = df['DateTime'].dt.hour
         else:
             warnings.append('No valid date/time rows found')
             df['DateTime'] = pd.RangeIndex(len(df))
+            df['DateOnly'] = 0
+            df['Hour'] = 0
     except Exception as e:
         warnings.append(f'Could not parse datetime: {str(e)}')
         df['DateTime'] = pd.RangeIndex(len(df))
+        df['DateOnly'] = 0
+        df['Hour'] = 0
     
     total_intervals = len(df)
-    notes.append(f'Total 15-minute intervals: {total_intervals}')
+    unique_dates = df['DateOnly'].nunique() if 'DateOnly' in df.columns else 1
+    notes.append(f'Total 15-minute intervals: {total_intervals} across {unique_dates} days')
     
     volumes_vph = {}
     peak_hour_start = None
     
     if aggregation == 'peak_hour' and total_intervals >= 4:
-        # Find the 4 consecutive intervals with highest total volume
-        df['TotalVol'] = df[lanes_with_data].sum(axis=1)
+        # IMPROVED: Find peak hour PER DAY, then AVERAGE across all days
+        # This gives representative peak-hour conditions, not a single cherry-picked hour
         
-        best_sum = 0
-        best_start_idx = 0
+        daily_peak_volumes = {col: [] for col in lanes_with_data}
+        peak_hours_found = []
         
-        for i in range(len(df) - 3):
-            window_sum = df['TotalVol'].iloc[i:i+4].sum()
-            if window_sum > best_sum:
-                best_sum = window_sum
-                best_start_idx = i
+        for date_val, day_df in df.groupby('DateOnly'):
+            if len(day_df) < 4:
+                # Skip days with insufficient data
+                continue
+            
+            day_df = day_df.sort_values('DateTime').reset_index(drop=True)
+            day_df['TotalVol'] = day_df[lanes_with_data].sum(axis=1)
+            
+            # Find the peak hour (4 consecutive 15-min intervals) for this day
+            best_sum = 0
+            best_start_idx = 0
+            for i in range(len(day_df) - 3):
+                window_sum = day_df['TotalVol'].iloc[i:i+4].sum()
+                if window_sum > best_sum:
+                    best_sum = window_sum
+                    best_start_idx = i
+            
+            peak_df = day_df.iloc[best_start_idx:best_start_idx + 4]
+            
+            # Record peak hour start time
+            if 'DateTime' in day_df.columns and not peak_df.empty:
+                peak_dt = peak_df['DateTime'].iloc[0]
+                if pd.notna(peak_dt):
+                    try:
+                        peak_hours_found.append(f"{date_val} {peak_dt.strftime('%H:%M')}")
+                    except Exception:
+                        pass
+            
+            # Accumulate volumes for this day's peak hour
+            for col in lanes_with_data:
+                daily_peak_volumes[col].append(int(peak_df[col].sum()))
         
-        peak_df = df.iloc[best_start_idx:best_start_idx+4]
-        
-        # Get peak hour start time
-        if 'DateTime' in df.columns:
-            peak_dt = peak_df['DateTime'].iloc[0]
-            if pd.notna(peak_dt):
-                try:
-                    peak_hour_start = peak_dt.strftime('%Y-%m-%d %H:%M')
-                except Exception:
-                    peak_hour_start = str(peak_dt)
-            else:
-                peak_hour_start = f"Interval {best_start_idx}"
+        if not any(daily_peak_volumes.values()) or not daily_peak_volumes[lanes_with_data[0]]:
+            # Fallback if no valid days found
+            warnings.append('No complete days found for peak hour analysis')
+            total_hours = total_intervals * 0.25 or 1.0
+            for col in lanes_with_data:
+                volumes_vph[col] = int(df[col].sum() / total_hours)
         else:
-            peak_hour_start = f"Interval {best_start_idx}"
-        
-        notes.append(f'Peak hour detected starting at: {peak_hour_start}')
-        
-        # Sum volumes for peak hour (already hourly since 4 x 15-min = 1 hour)
-        for col in lanes_with_data:
-            volumes_vph[col] = int(peak_df[col].sum())
+            # AVERAGE the peak-hour volumes across all days
+            num_days = len(daily_peak_volumes[lanes_with_data[0]])
+            for col in lanes_with_data:
+                avg_peak_vol = sum(daily_peak_volumes[col]) / len(daily_peak_volumes[col])
+                volumes_vph[col] = int(round(avg_peak_vol))
+            
+            notes.append(f'Averaged peak-hour volumes across {num_days} days')
+            if peak_hours_found:
+                # Show a sample of peak hours found
+                sample = peak_hours_found[:3]
+                if len(peak_hours_found) > 3:
+                    sample.append(f'...and {len(peak_hours_found)-3} more')
+                peak_hour_start = f"Multiple days: {', '.join(sample)}"
     
     else:
         # Use total file sum converted to hourly rate
@@ -813,6 +837,58 @@ def compute_intersection_los(
     }
 
 
+def get_green_time_for_movement(
+    movement: str,
+    movement_greens: Dict[str, float],
+    cycle_length: float
+) -> Tuple[float, str]:
+    """
+    Find the appropriate green time for a movement with fallback strategies.
+    
+    Strategy:
+    1. Direct match (e.g., NBT -> NBT)
+    2. Direction match (e.g., NBT -> any NB phase)
+    3. Opposing through movement (e.g., NBT uses SBT green if coordinated)
+    4. Default minimum green (15s or 15% of cycle) as last resort
+    
+    Args:
+        movement: Movement code (e.g., 'NBT', 'EBL')
+        movement_greens: Dict of movement -> green time mappings
+        cycle_length: Total cycle length in seconds
+    
+    Returns:
+        Tuple of (green_time, match_type) where match_type indicates how match was found
+    """
+    # Direct match
+    if movement in movement_greens:
+        return movement_greens[movement], 'direct'
+    
+    direction = movement[:2]  # NB, SB, EB, WB
+    move_type = movement[2] if len(movement) > 2 else 'T'  # L, T, R
+    
+    # Find any green for same direction
+    direction_greens = []
+    for mov, g in movement_greens.items():
+        if mov.startswith(direction):
+            direction_greens.append(g)
+    
+    if direction_greens:
+        # Use the maximum green for this direction (typically through movement)
+        return max(direction_greens), 'direction'
+    
+    # For through movements, check opposing direction (coordinated signals)
+    if move_type == 'T':
+        opposing = {'NB': 'SB', 'SB': 'NB', 'EB': 'WB', 'WB': 'EB'}
+        opp_dir = opposing.get(direction, '')
+        for mov, g in movement_greens.items():
+            if mov.startswith(opp_dir) and 'T' in mov:
+                return g, 'opposing'
+    
+    # Last resort: use a conservative default (about 15% of typical cycle)
+    default_green = max(15.0, cycle_length * 0.15)
+    return default_green, 'default'
+
+
 # =============================================================================
 # Main API Functions
 # =============================================================================
@@ -889,38 +965,22 @@ def compute_los_for_intersection(
     
     # Compute LOS for each movement
     per_lane_results = []
+    match_notes = []
     
     for movement, volume_vph in volumes.items():
-        if volume_vph == 0:
+        if volume_vph <= 0:
             # Skip movements with zero volume
             continue
         
-        # Get green time for this movement
-        green_time = movement_green_times.get(movement)
+        # Get green time for this movement using improved fallback matching
+        green_time, match_type = get_green_time_for_movement(
+            movement, movement_green_times, cycle_length
+        )
         
-        if green_time is None:
-            # Try to find a matching phase
-            # Look for partial matches (e.g., 'EB' for 'EBT')
-            direction = movement[:2]
-            for phase_label, g in movement_green_times.items():
-                if direction in phase_label.upper():
-                    green_time = g
-                    break
-        
-        if green_time is None or green_time <= 0:
-            warnings.append(f'No green time found for movement {movement}')
-            per_lane_results.append({
-                'movement': movement,
-                'volume_vph': volume_vph,
-                'saturation_flow_vphpl': saturation_flow,
-                'g_s': None,
-                'g_over_C': None,
-                'degree_of_saturation': None,
-                'delay_s_per_veh': None,
-                'LOS': None,
-                'warning': 'No green time found'
-            })
-            continue
+        if match_type == 'default':
+            match_notes.append(f'{movement}: using default green {green_time:.0f}s')
+        elif match_type != 'direct':
+            match_notes.append(f'{movement}: matched via {match_type}')
         
         # Compute delay
         delay, X, g_over_C = compute_control_delay(
@@ -938,8 +998,12 @@ def compute_los_for_intersection(
             'g_over_C': round(g_over_C, 3),
             'degree_of_saturation': round(X, 3),
             'delay_s_per_veh': round(delay, 1),
-            'LOS': determine_los(delay)
+            'LOS': determine_los(delay),
+            'match_type': match_type
         })
+    
+    if match_notes:
+        notes.append(f'Green time matching: {len(match_notes)} movements required inference')
     
     # Compute intersection-level LOS
     intersection_summary = compute_intersection_los(per_lane_results)
