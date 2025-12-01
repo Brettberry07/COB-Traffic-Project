@@ -1,0 +1,215 @@
+Summary: {'total_intersections': 10, 'successful': 10, 'failed': 0}
+
+LOS Distribution:
+intersection_id  average_delay_s LOS  total_volume_vph
+          102_A           100.49   F              3120
+       102_Been            80.34   F              3130
+          102_C           125.77   F              2513
+        102_Elm            94.27   F              2830
+ 102_Greenhouse           128.05   F              3312
+          102_I            91.32   F              3806
+          102_J            51.45   D              3443
+    102_Moberly            86.32   F              2483
+          102_P           130.16   F              2249
+     102_Walton            82.37   F              4107
+
+
+==========================================================================================
+DETAILED LOS ANALYSIS (Multi-Day Averaged Peak Hour)
+==========================================================================================
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_A
+  Cycle Length: 161.0s | Plan: 25
+  Intersection LOS: F | Avg Delay: 100.5s
+  Total Volume: 3,120 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      81      77s     0.48    0.09    23.1s    C    direct    
+  EBT      1109    77s     0.48    1.22    150.0s   F    direct    
+  NBL      45      31s     0.19    0.12    54.4s    D    direct    
+  NBR      176     31s     0.19    0.48    62.3s    E    direct    
+  NBT      208     31s     0.19    0.57    65.2s    E    direct    
+  SBL      164     33s     0.20    0.42    59.0s    E    direct    
+  SBR      153     33s     0.20    0.39    58.3s    E    direct    
+  SBT      175     33s     0.20    0.45    59.8s    E    direct    
+  WBL      40      77s     0.48    0.04    22.5s    C    direct    
+  WBT      969     77s     0.48    1.07    91.2s    F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_Been
+  Cycle Length: 165.0s | Plan: 25
+  Intersection LOS: F | Avg Delay: 80.3s
+  Total Volume: 3,130 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      40      89s     0.54    0.04    18.0s    B    direct    
+  EBR      95      89s     0.54    0.09    18.6s    B    direct    
+  EBT      866     89s     0.54    0.84    40.7s    D    direct    
+  NBL      62      36s     0.22    0.15    52.9s    D    direct    
+  NBR      90      36s     0.22    0.22    54.1s    D    direct    
+  NBT      78      36s     0.22    0.19    53.6s    D    direct    
+  SBL      69      36s     0.22    0.17    53.2s    D    direct    
+  SBT      206     36s     0.22    0.50    60.8s    E    direct    
+  WBL      169     89s     0.54    0.17    19.6s    B    direct    
+  WBR      212     89s     0.54    0.21    20.2s    C    direct    
+  WBT      1243    89s     0.54    1.21    142.9s   F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_C
+  Cycle Length: 150.0s | Plan: 25
+  Intersection LOS: F | Avg Delay: 125.8s
+  Total Volume: 2,513 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      78      53s     0.35    0.12    33.1s    C    direct    
+  EBR      54      53s     0.35    0.08    32.5s    C    direct    
+  EBT      1077    53s     0.35    1.60    150.0s   F    direct    
+  NBL      74      30s     0.20    0.20    51.1s    D    direct    
+  NBR      78      30s     0.20    0.20    51.3s    D    direct    
+  NBT      60      30s     0.20    0.16    50.5s    D    direct    
+  SBL      53      42s     0.28    0.10    40.4s    D    direct    
+  SBR      26      42s     0.28    0.05    39.6s    D    direct    
+  SBT      45      42s     0.28    0.09    40.1s    D    direct    
+  WBL      59      53s     0.35    0.09    32.6s    C    direct    
+  WBR      33      53s     0.35    0.05    32.1s    C    direct    
+  WBT      876     53s     0.35    1.30    150.0s   F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_Elm
+  Cycle Length: 150.3s | Plan: 25
+  Intersection LOS: F | Avg Delay: 94.3s
+  Total Volume: 2,830 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      266     74s     0.49    0.28    23.3s    C    direct    
+  EBT      971     74s     0.49    1.04    77.9s    E    direct    
+  SBL      288     33s     0.22    0.69    63.0s    E    direct    
+  SBR      237     66s     0.44    0.28    27.9s    C    direct    
+  WBT      1068    45s     0.30    1.88    150.0s   F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_Greenhouse
+  Cycle Length: 132.1s | Plan: 25
+  Intersection LOS: F | Avg Delay: 128.1s
+  Total Volume: 3,312 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      162     20s     0.15    0.57    60.2s    E    default   
+  EBT      1054    35s     0.27    2.09    150.0s   F    opposing  
+  NBR      317     15s     0.11    1.47    150.0s   F    direct    
+  NBT      277     15s     0.11    1.28    150.0s   F    direct    
+  SBR      192     70s     0.53    0.19    16.7s    B    direct    
+  SBT      126     70s     0.53    0.12    15.9s    B    direct    
+  WBL      178     20s     0.15    0.62    62.1s    E    direct    
+  WBT      1006    35s     0.27    2.00    150.0s   F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_I
+  Cycle Length: 160.5s | Plan: 25
+  Intersection LOS: F | Avg Delay: 91.3s
+  Total Volume: 3,806 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      156     71s     0.44    0.19    27.7s    C    direct    
+  EBR      184     71s     0.44    0.22    28.2s    C    direct    
+  EBT      833     71s     0.44    0.99    73.4s    E    direct    
+  NBL      149     32s     0.20    0.39    58.9s    E    direct    
+  NBR      168     19s     0.12    0.75    88.5s    F    direct    
+  NBT      241     32s     0.20    0.64    66.8s    E    direct    
+  SBL      121     30s     0.19    0.34    59.3s    E    direct    
+  SBR      186     30s     0.19    0.52    64.2s    E    direct    
+  SBT      376     30s     0.19    1.06    129.4s   F    direct    
+  WBL      239     76s     0.47    0.27    26.2s    C    direct    
+  WBR      62      76s     0.47    0.07    23.1s    C    direct    
+  WBT      1091    76s     0.47    1.21    148.2s   F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_J
+  Cycle Length: 163.0s | Plan: 25
+  Intersection LOS: D | Avg Delay: 51.5s
+  Total Volume: 3,443 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      247     62s     0.38    0.34    37.3s    D    direct    
+  EBR      387     62s     0.38    0.54    42.1s    D    direct    
+  EBT      481     62s     0.38    0.67    46.7s    D    direct    
+  NBL      220     34s     0.21    0.56    63.2s    E    direct    
+  NBR      276     34s     0.21    0.70    69.4s    E    direct    
+  NBT      277     34s     0.21    0.70    69.6s    E    direct    
+  SBL      125     34s     0.21    0.32    56.7s    E    direct    
+  SBR      147     34s     0.21    0.37    58.0s    E    direct    
+  SBT      324     34s     0.21    0.82    78.4s    E    direct    
+  WBL      191     66s     0.41    0.25    32.9s    C    direct    
+  WBR      383     66s     0.41    0.50    38.4s    D    direct    
+  WBT      385     66s     0.41    0.50    38.5s    D    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_Moberly
+  Cycle Length: 161.0s | Plan: 25
+  Intersection LOS: F | Avg Delay: 86.3s
+  Total Volume: 2,483 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      233     62s     0.39    0.32    35.8s    D    direct    
+  EBR      84      62s     0.39    0.12    32.2s    C    direct    
+  EBT      343     62s     0.39    0.47    39.3s    D    direct    
+  NBL      92      20s     0.12    0.39    69.7s    E    direct    
+  NBR      94      20s     0.12    0.40    69.9s    E    direction 
+  NBT      181     20s     0.12    0.77    89.2s    F    direct    
+  SBL      64      34s     0.21    0.16    52.7s    D    direct    
+  SBR      40      34s     0.21    0.10    51.7s    D    direct    
+  SBT      201     34s     0.21    0.50    60.4s    E    direct    
+  WBL      221     57s     0.35    0.33    39.3s    D    direct    
+  WBR      44      57s     0.35    0.07    34.6s    C    direct    
+  WBT      886     57s     0.35    1.32    150.0s   F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_P
+  Cycle Length: 150.5s | Plan: 25
+  Intersection LOS: F | Avg Delay: 130.2s
+  Total Volume: 2,249 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      44      56s     0.37    0.06    30.5s    C    direct    
+  EBR      42      56s     0.37    0.06    30.5s    C    direct    
+  EBT      990     56s     0.37    1.40    150.0s   F    direct    
+  NBL      43      31s     0.21    0.11    49.1s    D    direct    
+  NBR      34      31s     0.21    0.09    48.7s    D    direct    
+  NBT      13      31s     0.21    0.03    47.9s    D    direct    
+  SBL      120     41s     0.27    0.23    43.6s    D    direct    
+  SBR      36      41s     0.27    0.07    40.9s    D    direct    
+  SBT      23      41s     0.27    0.04    40.5s    D    direct    
+  WBL      19      50s     0.33    0.03    34.0s    C    direct    
+  WBR      33      50s     0.33    0.05    34.3s    C    direct    
+  WBT      852     50s     0.33    1.35    150.0s   F    direct    
+
+──────────────────────────────────────────────────────────────────────
+Intersection: 102_Walton
+  Cycle Length: 161.0s | Plan: 25
+  Intersection LOS: F | Avg Delay: 82.4s
+  Total Volume: 4,107 vph
+
+  Movement Vol     Green   g/C     v/c     Delay    LOS  Match     
+  -----------------------------------------------------------------
+  EBL      113     69s     0.43    0.14    28.3s    C    direct    
+  EBR      290     69s     0.43    0.36    32.2s    C    direct    
+  EBT      645     69s     0.43    0.79    47.6s    D    direct    
+  NBL      755     40s     0.25    1.60    150.0s   F    direct    
+  NBR      51      40s     0.25    0.11    47.2s    D    direct    
+  NBT      324     40s     0.25    0.69    62.7s    E    direct    
+  SBL      245     39s     0.24    0.53    57.4s    E    direct    
+  SBR      86      39s     0.24    0.19    49.3s    D    direct    
+  SBT      539     39s     0.24    1.17    150.0s   F    direct    
+  WBL      158     66s     0.41    0.20    31.2s    C    direct    
+  WBR      163     66s     0.41    0.21    31.3s    C    direct    
+  WBT      738     66s     0.41    0.95    67.6s    E    direct    
