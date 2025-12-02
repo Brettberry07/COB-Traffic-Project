@@ -32,6 +32,14 @@ from los_wrapper import LOSWrapper
 from models.hcm2010 import HCM2010Optimizer, extract_phase_movements
 
 
+# Import target generator for optimal training targets
+try:
+    from data.target_generator import OptimalTargetGenerator, VolumeConditionClassifier
+    HAS_TARGET_GENERATOR = True
+except ImportError:
+    HAS_TARGET_GENERATOR = False
+
+
 class TimingModel:
     """Base class for timing prediction models."""
     
@@ -154,6 +162,23 @@ class GradientBoostedTimingModel(TimingModel):
         """
         if not self.is_fitted:
             raise RuntimeError("Model not fitted yet")
+        
+        # Handle feature mismatch - use only features the model knows
+        available_features = [f for f in self.feature_names if f in X.columns]
+        missing_features = [f for f in self.feature_names if f not in X.columns]
+        
+        if missing_features:
+            # Create a DataFrame with all expected features, filling missing with 0
+            X_aligned = pd.DataFrame(index=X.index)
+            for f in self.feature_names:
+                if f in X.columns:
+                    X_aligned[f] = X[f]
+                else:
+                    X_aligned[f] = 0  # Fill missing features with 0
+            X = X_aligned
+        else:
+            # Ensure correct column order
+            X = X[self.feature_names]
         
         X_scaled = self.scaler.transform(X)
         
@@ -582,14 +607,20 @@ class ModelTrainer:
     def prepare_training_data(
         self,
         preprocessed_data: Dict[str, Any],
-        timing_features: Dict[str, Any]
+        timing_features: Dict[str, Any],
+        use_optimal_targets: bool = True
     ) -> Tuple[pd.DataFrame, pd.DataFrame, List[str]]:
         """
         Prepare training data from preprocessed intersection data.
         
+        CRITICAL FIX: When use_optimal_targets=True, generates optimal timing
+        targets for each traffic condition instead of using static current timings.
+        This allows the model to learn how to improve timings, not just replicate them.
+        
         Args:
             preprocessed_data: Dict from preprocess_intersection
             timing_features: Timing features dict
+            use_optimal_targets: If True, compute optimal timings for each sample
             
         Returns:
             Tuple of (features_df, targets_df, phase_names)
@@ -604,34 +635,93 @@ class ModelTrainer:
         feature_cols = []
         
         # Temporal features
-        temporal = ['hour', 'day_of_week', 'is_weekend', 'interval_of_day']
+        temporal = ['hour', 'day_of_week', 'is_weekend', 'interval_of_day', 'minute_of_day']
         feature_cols.extend([c for c in temporal if c in volume_df.columns])
         
-        # Volume features
+        # Volume features (base movements)
         for col in movement_cols:
             if col in volume_df.columns:
                 feature_cols.append(col)
         
-        # Rolling features
+        # Rolling features (mean, std)
         rolling = [c for c in volume_df.columns if 'mean_' in c or 'std_' in c]
         feature_cols.extend(rolling)
+        
+        # Aggregation features (sum, max, std) - for compatibility with aggregated prediction
+        agg_features = [c for c in volume_df.columns if '_sum' in c or '_max' in c]
+        feature_cols.extend(agg_features)
+        
+        # Advanced traffic engineering features
+        advanced = ['vc_ratio', 'ns_imbalance', 'ew_imbalance', 'major_minor_ratio',
+                   'major_road_pct', 'left_turn_ratio', 'left_pct_of_total',
+                   'is_am_peak', 'is_pm_peak', 'is_peak', 'hour_sin', 'hour_cos',
+                   'volume_change_pct', 'volume_trend', 'volume_cv',
+                   'total_left', 'total_through', 'total_right',
+                   'nb_total', 'sb_total', 'eb_total', 'wb_total']
+        feature_cols.extend([c for c in advanced if c in volume_df.columns])
+        
+        # Per-direction features
+        for direction in ['NB', 'SB', 'EB', 'WB']:
+            dir_cols = [f'{direction}_left_ratio', f'{direction}_volume', f'{direction}_dos']
+            feature_cols.extend([c for c in dir_cols if c in volume_df.columns])
         
         # Total volume
         if 'total_volume' in volume_df.columns:
             feature_cols.append('total_volume')
+        if 'total_volume_sum' in volume_df.columns:
+            feature_cols.append('total_volume_sum')
+        
+        # Remove duplicates while preserving order
+        feature_cols = list(dict.fromkeys(feature_cols))
+        
+        # Only use columns that exist
+        feature_cols = [c for c in feature_cols if c in volume_df.columns]
         
         X = volume_df[feature_cols].copy()
         
-        # For targets, we use the historical timing (which would be the same 
-        # for all rows in this implementation - in practice you'd have varying timings)
+        # Fill any NaN values
+        X = X.fillna(0)
+        
+        # Get phase information
         phase_greens = timing_features.get('phase_greens', {})
         phase_names = list(phase_greens.keys())
         
-        # Create target DataFrame
-        y = pd.DataFrame({
-            phase: [green] * len(X)
-            for phase, green in phase_greens.items()
-        })
+        # Generate training targets
+        if use_optimal_targets and HAS_TARGET_GENERATOR:
+            print("  Generating optimal training targets (this improves model learning)...")
+            
+            # Get phase movements for optimization
+            phase_movements = extract_phase_movements(phase_names)
+            
+            # Current timing for comparison
+            current_timing = {
+                'cycle_length': timing_features.get('cycle_length', 120),
+                'phase_greens': phase_greens
+            }
+            
+            # Generate optimal targets
+            target_generator = OptimalTargetGenerator()
+            targets_df, target_meta = target_generator.generate_training_targets(
+                volume_df=volume_df,
+                movement_cols=movement_cols,
+                phase_movements=phase_movements,
+                current_timing=current_timing,
+                sample_rate=0.3  # Sample 30% for speed, interpolate rest
+            )
+            
+            # Extract phase columns
+            y = targets_df[phase_names]
+            
+            print(f"    Average improvement vs current: {target_meta['avg_improvement_vs_current']:.1f}%")
+        else:
+            # Fallback: use current timings (old behavior - suboptimal for learning)
+            if not HAS_TARGET_GENERATOR:
+                print("  Warning: Using static targets (target_generator not available)")
+            
+            y = pd.DataFrame({
+                phase: [green] * len(X)
+                for phase, green in phase_greens.items()
+            })
         
         return X, y, phase_names
     
@@ -808,9 +898,12 @@ if __name__ == '__main__':
     
     print("Loading and preprocessing data...")
     ingested = ingest_all()
-    preprocessed = preprocess_all(ingested)
     
-    print("Training models...")
+    # For training: use NON-aggregated data to get enough samples
+    # But filter to only 12pm-6pm hours for consistency with prediction
+    preprocessed = preprocess_all(ingested, aggregate_window=False)
+    
+    print("Training models (using 12pm-6pm data)...")
     trainer = ModelTrainer()
     
     all_results = {}
@@ -822,17 +915,26 @@ if __name__ == '__main__':
         
         print(f"\nTraining models for {int_id}...")
         
+        # Filter to 12pm-6pm hours only
+        volume_df = data.get('volume_df')
+        if volume_df is not None and 'hour' in volume_df.columns:
+            mask = (volume_df['hour'] >= 12) & (volume_df['hour'] < 18)
+            filtered_df = volume_df[mask].copy()
+            data['volume_df'] = filtered_df
+            print(f"  Filtered to {len(filtered_df)} rows (12pm-6pm)")
+        
         timing_features = data.get('timing_features', {})
         X, y, phase_names = trainer.prepare_training_data(data, timing_features)
         
-        if X is None or len(X) < 100:
-            print(f"  Insufficient data for {int_id}")
+        if X is None or len(X) < 50:
+            print(f"  Insufficient data for {int_id} ({len(X) if X is not None else 0} samples)")
             continue
         
         results = trainer.train_all_models(X, y, phase_names, int_id)
         all_results[int_id] = results
         
         print(f"  Best model: {results['comparison'].get('best_model', 'unknown')}")
+        print(f"  Training samples: {results['training_samples']}")
     
     # Generate benchmark report
     print("\nGenerating benchmark report...")

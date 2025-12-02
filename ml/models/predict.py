@@ -2,10 +2,10 @@
 Prediction Module - Inference pipeline producing validated timing plans.
 
 This module:
-- Loads trained models
-- Generates timing plan recommendations for each 15-minute interval
+- Loads trained ML models
+- Generates timing plan recommendations (single recommendation for 12pm-6pm window)
 - Validates all plans using LOS.py
-- Falls back to HCM2010 baseline if ML plans worsen LOS
+- Uses ML model exclusively for timing optimization
 - Outputs results as NDJSON
 """
 
@@ -24,40 +24,38 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from los_wrapper import LOSWrapper
-from models.hcm2010 import HCM2010Optimizer, extract_phase_movements
+from models.hcm2010 import extract_phase_movements  # Only for phase parsing
 from models.train import (
     GradientBoostedTimingModel,
     SequenceTimingModel,
     HybridTimingModel
 )
 
+# Import timing optimizer for improved predictions
+try:
+    from models.timing_optimizer import TimingOptimizer, OptimizationStrategy
+    HAS_OPTIMIZER = True
+except ImportError:
+    HAS_OPTIMIZER = False
+
 
 class TimingPlanPredictor:
     """
-    Generates validated timing plan recommendations.
+    Generates validated timing plan recommendations using ML models.
     """
-    
-    # LOS degradation threshold (percentage)
-    LOS_DEGRADATION_THRESHOLD = 5.0
     
     def __init__(
         self,
-        model_dir: str = 'ml/models/trained',
-        los_degradation_threshold: float = None
+        model_dir: str = 'ml/models/trained'
     ):
         """
         Initialize the predictor.
         
         Args:
             model_dir: Directory containing trained models
-            los_degradation_threshold: Max allowed LOS degradation (%)
         """
         self.model_dir = model_dir
         self.los_wrapper = LOSWrapper()
-        self.hcm2010 = HCM2010Optimizer()
-        
-        if los_degradation_threshold is not None:
-            self.LOS_DEGRADATION_THRESHOLD = los_degradation_threshold
         
         self.loaded_models = {}
     
@@ -111,30 +109,6 @@ class TimingPlanPredictor:
             print(f"Error loading model {model_path}: {e}")
             return None
     
-    def generate_hcm2010_baseline(
-        self,
-        volumes: Dict[str, float],
-        phase_movements: Dict[str, List[str]],
-        current_timing: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """
-        Generate HCM2010 baseline timing plan.
-        
-        Args:
-            volumes: Traffic volumes per movement
-            phase_movements: Phase to movement mapping
-            current_timing: Current timing parameters
-            
-        Returns:
-            HCM2010 optimized timing plan
-        """
-        return self.hcm2010.optimize_timing_plan(
-            volumes=volumes,
-            phase_movements=phase_movements,
-            current_yellow=current_timing.get('yellow_times'),
-            current_red_clearance=current_timing.get('red_clearance')
-        )
-    
     def predict_timing_plan(
         self,
         intersection_id: str,
@@ -142,10 +116,15 @@ class TimingPlanPredictor:
         volumes: Dict[str, float],
         phase_movements: Dict[str, List[str]],
         current_timing: Dict[str, Any],
-        model_type: str = 'gradient_boosted'
+        model_type: str = 'gradient_boosted',
+        use_optimizer: bool = True
     ) -> Dict[str, Any]:
         """
-        Predict timing plan using ML model with validation.
+        Predict timing plan using ML model with optional optimization.
+        
+        IMPROVEMENT: When use_optimizer=True, performs additional search
+        optimization after ML prediction to find better solutions that the
+        model might miss.
         
         Args:
             intersection_id: Intersection identifier
@@ -154,6 +133,7 @@ class TimingPlanPredictor:
             phase_movements: Phase to movement mapping
             current_timing: Current timing parameters
             model_type: Type of model to use
+            use_optimizer: If True, apply search optimization after ML
             
         Returns:
             Validated timing plan dict
@@ -195,22 +175,19 @@ class TimingPlanPredictor:
                     # Average if multiple rows
                     avg_greens = predictions.mean().to_dict()
                     
-                    # Apply constraints
+                    # Apply constraints (min/max green times)
+                    MIN_GREEN = 7
+                    MAX_GREEN = 90
                     constrained_greens = {}
                     for phase, green in avg_greens.items():
-                        constrained_greens[phase] = max(
-                            self.hcm2010.MIN_GREEN,
-                            min(self.hcm2010.MAX_GREEN, green)
-                        )
+                        constrained_greens[phase] = max(MIN_GREEN, min(MAX_GREEN, green))
                     
-                    # Compute cycle length using HCM2010
-                    critical_vols = self.hcm2010.compute_critical_volumes(
-                        volumes, phase_movements
-                    )
-                    flow_ratios = self.hcm2010.compute_flow_ratios(critical_vols)
-                    cycle_length = self.hcm2010.webster_optimal_cycle(
-                        flow_ratios, len(phase_movements)
-                    )
+                    # Compute cycle length as sum of greens plus clearance times
+                    total_green = sum(constrained_greens.values())
+                    num_phases = len(constrained_greens)
+                    avg_clearance = 5.0  # yellow + red clearance per phase
+                    cycle_length = total_green + (num_phases * avg_clearance)
+                    cycle_length = max(60, min(180, cycle_length))  # Constrain cycle
                     
                     ml_plan = {
                         'cycle_length': cycle_length,
@@ -226,40 +203,81 @@ class TimingPlanPredictor:
                 print(f"ML prediction error: {e}")
                 ml_plan = None
         
-        # Get HCM2010 baseline
-        hcm_plan = self.generate_hcm2010_baseline(
-            volumes, phase_movements, current_timing
-        )
-        hcm_delay = hcm_plan['evaluation']['intersection']['average_delay_s_per_veh']
+        # Apply optimization to find improvements
+        optimized_plan = None
+        if use_optimizer and HAS_OPTIMIZER:
+            optimizer = TimingOptimizer()
+            
+            # Use ML plan as starting point if available, otherwise current plan
+            start_plan = ml_plan if ml_plan else current_plan
+            
+            opt_result = optimizer.optimize(
+                volumes=volumes,
+                current_plan=current_plan,
+                ml_plan=ml_plan,
+                phase_movements=phase_movements,
+                strategy=OptimizationStrategy.LOCAL_SEARCH
+            )
+            
+            if opt_result['delay'] < current_delay - 0.5:  # At least 0.5s improvement
+                optimized_plan = {
+                    'cycle_length': opt_result['cycle_length'],
+                    'phase_greens': opt_result['phase_greens']
+                }
+                opt_eval = self.los_wrapper.evaluate_timing_plan(
+                    volumes=volumes,
+                    cycle_length=opt_result['cycle_length'],
+                    phase_greens=opt_result['phase_greens']
+                )
         
         # Decide which plan to use
+        best_plan = None
+        best_delay = current_delay
+        best_source = 'keep_current'
+        
+        # Check optimized plan first (if available)
+        if optimized_plan is not None:
+            opt_delay = opt_eval['intersection']['average_delay_s_per_veh']
+            if opt_delay < best_delay:
+                best_plan = optimized_plan
+                best_delay = opt_delay
+                best_source = 'optimizer'
+        
+        # Check ML plan
         if ml_plan is not None and ml_eval is not None:
             ml_delay = ml_eval['intersection']['average_delay_s_per_veh']
-            
-            # Check if ML plan worsens LOS beyond threshold
-            if current_delay > 0:
-                degradation = ((ml_delay - current_delay) / current_delay) * 100
-            else:
-                degradation = 0 if ml_delay <= current_delay else 100
-            
-            if degradation > self.LOS_DEGRADATION_THRESHOLD:
-                # Reject ML plan, use HCM2010 baseline
-                selected_plan = hcm_plan
-                selected_plan['source'] = 'hcm2010_fallback'
-                selected_plan['rejection_reason'] = f'ML plan worsened LOS by {degradation:.1f}%'
-            else:
-                # Use ML plan
+            if ml_delay < best_delay:
+                best_plan = ml_plan
+                best_delay = ml_delay
+                best_source = f'{model_type}_ml'
+        
+        # Select the best plan
+        if best_plan is not None and best_delay < current_delay:
+            if best_source == 'optimizer':
                 selected_plan = {
-                    'cycle_length': ml_plan['cycle_length'],
-                    'phase_greens': ml_plan['phase_greens'],
+                    'cycle_length': best_plan['cycle_length'],
+                    'phase_greens': best_plan['phase_greens'],
+                    'evaluation': opt_eval,
+                    'source': 'optimizer',
+                    'improvement': (current_delay - best_delay) / current_delay * 100 if current_delay > 0 else 0
+                }
+            else:
+                selected_plan = {
+                    'cycle_length': best_plan['cycle_length'],
+                    'phase_greens': best_plan['phase_greens'],
                     'evaluation': ml_eval,
-                    'source': f'{model_type}_ml',
-                    'improvement': (current_delay - ml_delay) / current_delay * 100 if current_delay > 0 else 0
+                    'source': best_source,
+                    'improvement': (current_delay - best_delay) / current_delay * 100 if current_delay > 0 else 0
                 }
         else:
-            # No ML model available, use HCM2010
-            selected_plan = hcm_plan
-            selected_plan['source'] = 'hcm2010_baseline'
+            # No improvement found - keep current timing
+            selected_plan = {
+                'cycle_length': current_plan['cycle_length'],
+                'phase_greens': current_plan['phase_greens'],
+                'evaluation': current_eval,
+                'source': 'keep_current',
+                'note': 'No improvement found over current timing'
+            }
         
         # Validate final plan
         is_valid, violations = self.los_wrapper.validate_timing_plan(
@@ -270,10 +288,14 @@ class TimingPlanPredictor:
         )
         
         if not is_valid:
-            # Safety fallback
-            selected_plan = hcm_plan
-            selected_plan['source'] = 'hcm2010_safety_fallback'
-            selected_plan['safety_violations'] = violations
+            # Keep current timing if validation fails
+            selected_plan = {
+                'cycle_length': current_plan['cycle_length'],
+                'phase_greens': current_plan['phase_greens'],
+                'evaluation': current_eval,
+                'source': 'keep_current_safety',
+                'safety_violations': violations
+            }
         
         selected_plan['is_valid'] = is_valid
         selected_plan['current_los'] = current_los
@@ -287,7 +309,8 @@ class TimingPlanPredictor:
         timestamp: str,
         timing_plan: Dict[str, Any],
         yellow_times: Dict[str, float],
-        red_clearance: Dict[str, float]
+        red_clearance: Dict[str, float],
+        time_window: str = None
     ) -> Dict[str, Any]:
         """
         Generate a JSON recommendation object for output.
@@ -298,6 +321,7 @@ class TimingPlanPredictor:
             timing_plan: The selected timing plan
             yellow_times: Yellow times for each phase
             red_clearance: Red clearance times for each phase
+            time_window: Optional time window description (e.g., "12:00-18:00")
             
         Returns:
             JSON-serializable recommendation dict
@@ -305,14 +329,15 @@ class TimingPlanPredictor:
         evaluation = timing_plan.get('evaluation', {})
         intersection_eval = evaluation.get('intersection', {})
         
-        # Build phases list
+        # Build phases list - only green times are recommendations
+        # Yellow and red clearance are preserved from current timing (not changeable)
         phases = []
         for phase, green in timing_plan.get('phase_greens', {}).items():
             phases.append({
                 'phase': phase,
-                'green': round(green, 1),
-                'yellow': yellow_times.get(phase, 4.0),
-                'red_clearance': red_clearance.get(phase, 1.0)
+                'green_recommended': round(green, 1),
+                'yellow_unchanged': yellow_times.get(phase, 4.0),
+                'red_clearance_unchanged': red_clearance.get(phase, 1.0)
             })
         
         # Compute recommendation score
@@ -329,6 +354,14 @@ class TimingPlanPredictor:
         
         if timing_plan.get('source') == 'hcm2010_fallback':
             notes.append(f"ML plan rejected: {timing_plan.get('rejection_reason', 'unknown')}")
+        elif timing_plan.get('source') == 'keep_current':
+            notes.append("No change recommended - current timing is optimal")
+            if timing_plan.get('rejection_reason'):
+                notes.append(timing_plan.get('rejection_reason'))
+            if timing_plan.get('note'):
+                notes.append(timing_plan.get('note'))
+        elif timing_plan.get('source') == 'keep_current_safety':
+            notes.append("Keeping current timing due to safety constraints")
         
         if improvement > 0:
             notes.append(f"Estimated delay reduction: {improvement:.1f}%")
@@ -337,11 +370,13 @@ class TimingPlanPredictor:
             notes.append(f"Warning: Plan may increase delay by {-improvement:.1f}%")
         
         notes.append(f"Source: {timing_plan.get('source', 'unknown')}")
+        notes.append("Note: Only green times can be changed. Yellow and red clearance times are preserved.")
         
         return {
             'intersection_id': intersection_id,
             'timestamp': timestamp,
-            'cycle_length': round(timing_plan.get('cycle_length', 120), 1),
+            'time_window': time_window or 'single_interval',
+            'cycle_length_recommended': round(timing_plan.get('cycle_length', 120), 1),
             'phases': phases,
             'recommended_change_score': round(max(0, min(100, improvement + 50)), 1),
             'notes': notes,
@@ -361,7 +396,10 @@ def predict_for_intersection(
     output_file: str = None
 ) -> List[Dict[str, Any]]:
     """
-    Generate predictions for all intervals of an intersection.
+    Generate predictions for an intersection.
+    
+    When aggregate_mode is enabled in preprocessed data, generates a single
+    timing recommendation for the entire time window (e.g., 12pm-6pm).
     
     Args:
         predictor: TimingPlanPredictor instance
@@ -371,15 +409,20 @@ def predict_for_intersection(
         output_file: Optional path to write NDJSON output
         
     Returns:
-        List of recommendation dicts
+        List of recommendation dicts (single item when aggregated)
     """
     intersection_id = preprocessed_data.get('intersection_id')
     volume_df = preprocessed_data.get('volume_df')
     movement_cols = preprocessed_data.get('movement_cols', [])
     timing_features = timing_data
+    vol_metadata = preprocessed_data.get('volume_metadata', {})
     
     if volume_df is None or len(volume_df) == 0:
         return []
+    
+    # Check if we're in aggregate mode
+    aggregate_mode = vol_metadata.get('aggregate_mode', False)
+    time_window = vol_metadata.get('time_window', None)
     
     # Extract phase movements
     phase_labels = list(timing_features.get('phase_greens', {}).keys())
@@ -399,12 +442,12 @@ def predict_for_intersection(
     
     recommendations = []
     
-    # Process each interval
+    # Process data - either single aggregated row or multiple intervals
     for idx, row in volume_df.iterrows():
-        # Get volumes for this interval
+        # Get volumes for this interval/window
         volumes = {col: row[col] for col in movement_cols if col in row.index}
         
-        # Get features for this interval
+        # Get features
         feature_cols = [c for c in volume_df.columns 
                        if c not in ['DATE', 'TIME', 'datetime', 'INTID']]
         features = volume_df.iloc[[idx]][feature_cols]
@@ -431,8 +474,15 @@ def predict_for_intersection(
             timestamp=timestamp,
             timing_plan=timing_plan,
             yellow_times=yellow_times,
-            red_clearance=red_clearance
+            red_clearance=red_clearance,
+            time_window=time_window
         )
+        
+        # Add aggregation metadata if in aggregate mode
+        if aggregate_mode:
+            agg_meta = vol_metadata.get('aggregation', {})
+            recommendation['intervals_aggregated'] = agg_meta.get('intervals_aggregated', 1)
+            recommendation['aggregation_note'] = f"Timing optimized for average traffic during {time_window}"
         
         recommendations.append(recommendation)
     
@@ -441,7 +491,8 @@ def predict_for_intersection(
         with open(output_file, 'w') as f:
             for rec in recommendations:
                 f.write(json.dumps(rec) + '\n')
-        print(f"Wrote {len(recommendations)} recommendations to {output_file}")
+        mode_desc = f"aggregated ({time_window})" if aggregate_mode else "per-interval"
+        print(f"Wrote {len(recommendations)} {mode_desc} recommendation(s) to {output_file}")
     
     return recommendations
 
@@ -453,6 +504,10 @@ def predict_all(
 ) -> Dict[str, List[Dict[str, Any]]]:
     """
     Generate predictions for all intersections.
+    
+    By default, generates a single timing recommendation per intersection
+    optimized for the 12pm-6pm time window when preprocessed with
+    aggregate_window=True.
     
     Args:
         preprocessed_data: Dict mapping intersection_id to preprocessed data
@@ -472,7 +527,11 @@ def predict_all(
             print(f"Skipping {int_id}: {data['error']}")
             continue
         
-        print(f"Generating predictions for {int_id}...")
+        vol_metadata = data.get('volume_metadata', {})
+        aggregate_mode = vol_metadata.get('aggregate_mode', False)
+        time_window = vol_metadata.get('time_window', 'per-interval')
+        
+        print(f"Generating predictions for {int_id} ({time_window})...")
         
         output_file = os.path.join(output_dir, f'{int_id}_recommendations.ndjson')
         
@@ -492,7 +551,8 @@ def predict_all(
             # Summary statistics
             improvements = [r['delay_before'] - r['delay_after'] for r in recommendations]
             avg_improvement = np.mean(improvements)
-            print(f"  Generated {len(recommendations)} recommendations")
+            mode_desc = "aggregated window" if aggregate_mode else f"{len(recommendations)} intervals"
+            print(f"  Generated {len(recommendations)} recommendation(s) ({mode_desc})")
             print(f"  Average delay improvement: {avg_improvement:.1f}s")
     
     return all_recommendations
@@ -502,18 +562,170 @@ if __name__ == '__main__':
     # Import data modules
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'data'))
     from ingest import ingest_all
-    from preprocess import preprocess_all
+    from preprocess import preprocess_all, preprocess_intersection
     
-    print("Loading and preprocessing data...")
+    print("Loading data...")
     ingested = ingest_all()
-    preprocessed = preprocess_all(ingested)
     
-    print("\nGenerating predictions...")
-    recommendations = predict_all(
-        preprocessed_data=preprocessed,
-        model_type='gradient_boosted',
-        output_dir='output'
-    )
+    # Define the two rush hour periods with their phase plans
+    # Period 1: 1:15pm - 2:45pm (13:15 - 14:45) -> Phase Plan 61
+    # Period 2: 2:45pm - 6:45pm (14:45 - 18:45) -> Phase Plan 64
+    
+    RUSH_HOUR_PERIODS = [
+        {
+            'name': 'early_afternoon',
+            'start_hour': 13,
+            'start_minute': 15,
+            'end_hour': 14,
+            'end_minute': 45,
+            'plan_number': 61,
+            'time_window': '13:15-14:45'
+        },
+        {
+            'name': 'pm_peak',
+            'start_hour': 14,
+            'start_minute': 45,
+            'end_hour': 18,
+            'end_minute': 45,
+            'plan_number': 64,
+            'time_window': '14:45-18:45'
+        }
+    ]
+    
+    os.makedirs('output', exist_ok=True)
+    predictor = TimingPlanPredictor()
+    
+    volumes_data = ingested.get('volumes', {})
+    timings_data = ingested.get('timings', {})
+    matched = ingested.get('matched_intersections', [])
+    
+    print(f"\nGenerating predictions for {len(matched)} intersections...")
+    print("Two timing recommendations per intersection:")
+    print("  - Period 1: 1:15pm - 2:45pm (Phase Plan 61)")
+    print("  - Period 2: 2:45pm - 6:45pm (Phase Plan 64)")
+    
+    for int_id in matched:
+        volume_data = volumes_data.get(int_id, {})
+        timing_data = timings_data.get(int_id, {})
+        
+        if volume_data.get('raw_df') is None:
+            print(f"\nSkipping {int_id}: No volume data")
+            continue
+        
+        print(f"\nProcessing {int_id}...")
+        
+        all_recommendations = []
+        
+        for period in RUSH_HOUR_PERIODS:
+            # Filter volume data to the specific time period
+            raw_df = volume_data.get('raw_df').copy()
+            movement_cols = volume_data['metadata'].get('available_movements', [])
+            
+            # Parse datetime if not already done
+            if 'datetime' not in raw_df.columns:
+                raw_df['TIME'] = raw_df['TIME'].fillna('0000').astype(str).str.zfill(4)
+                raw_df['DATE'] = raw_df['DATE'].fillna('').astype(str)
+                raw_df['datetime'] = pd.to_datetime(
+                    raw_df['DATE'] + ' ' + raw_df['TIME'],
+                    format='%m/%d/%Y %H%M',
+                    errors='coerce'
+                )
+            
+            # Extract hour and minute
+            raw_df['hour'] = raw_df['datetime'].dt.hour
+            raw_df['minute'] = raw_df['datetime'].dt.minute
+            
+            # Filter to the specific time period
+            start_time = period['start_hour'] * 60 + period['start_minute']
+            end_time = period['end_hour'] * 60 + period['end_minute']
+            raw_df['time_minutes'] = raw_df['hour'] * 60 + raw_df['minute']
+            
+            mask = (raw_df['time_minutes'] >= start_time) & (raw_df['time_minutes'] < end_time)
+            period_df = raw_df[mask].copy()
+            
+            if len(period_df) == 0:
+                print(f"  {period['time_window']}: No data available")
+                continue
+            
+            # Get timing features for the specific phase plan
+            from preprocess import TimingPreprocessor
+            timing_processor = TimingPreprocessor()
+            timing_features = timing_processor.extract_timing_features(
+                timing_data, 
+                plan_number=period['plan_number']
+            )
+            
+            if timing_features.get('error'):
+                print(f"  {period['time_window']}: Plan {period['plan_number']} not available")
+                continue
+            
+            # Average volumes for the period (convert 15-min to hourly)
+            volumes = {}
+            for col in movement_cols:
+                if col in period_df.columns:
+                    volumes[col] = period_df[col].mean() * 4  # Convert to hourly
+            
+            # Extract phase movements
+            phase_labels = list(timing_features.get('phase_greens', {}).keys())
+            phase_movements = extract_phase_movements(phase_labels)
+            
+            # Current timing from the phase plan
+            current_timing = {
+                'cycle_length': timing_features.get('cycle_length', 120),
+                'phase_greens': timing_features.get('phase_greens', {}),
+                'yellow_times': timing_features.get('yellow_times', {}),
+                'red_clearance': timing_features.get('red_clearance', {})
+            }
+            
+            # Create feature DataFrame for prediction
+            feature_data = {col: [period_df[col].mean()] for col in movement_cols if col in period_df.columns}
+            feature_data['hour'] = [(period['start_hour'] + period['end_hour']) / 2]
+            feature_data['total_volume'] = [sum(volumes.values()) / 4]  # Back to 15-min avg
+            features = pd.DataFrame(feature_data)
+            
+            # Predict timing plan with optimization
+            timing_plan = predictor.predict_timing_plan(
+                intersection_id=int_id,
+                features=features,
+                volumes=volumes,
+                phase_movements=phase_movements,
+                current_timing=current_timing,
+                model_type='gradient_boosted',
+                use_optimizer=True
+            )
+            
+            # Generate recommendation JSON
+            recommendation = predictor.generate_recommendation_json(
+                intersection_id=int_id,
+                timestamp=datetime.now().isoformat(),
+                timing_plan=timing_plan,
+                yellow_times=timing_features.get('yellow_times', {}),
+                red_clearance=timing_features.get('red_clearance', {}),
+                time_window=period['time_window']
+            )
+            
+            # Add period-specific metadata
+            recommendation['phase_plan'] = period['plan_number']
+            recommendation['period_name'] = period['name']
+            recommendation['intervals_in_period'] = len(period_df)
+            
+            all_recommendations.append(recommendation)
+            
+            # Print summary
+            improvement = recommendation.get('delay_before', 0) - recommendation.get('delay_after', 0)
+            print(f"  {period['time_window']} (Plan {period['plan_number']}): "
+                  f"LOS {recommendation.get('los_before', 'N/A')} -> {recommendation.get('los_after', 'N/A')}, "
+                  f"Delay improvement: {improvement:.1f}s")
+        
+        # Write recommendations to file
+        output_file = os.path.join('output', f'{int_id}_recommendations.ndjson')
+        with open(output_file, 'w') as f:
+            for rec in all_recommendations:
+                f.write(json.dumps(rec) + '\n')
+        
+        print(f"  Wrote {len(all_recommendations)} recommendations to {output_file}")
     
     print("\nPrediction complete!")
-    print(f"Processed {len(recommendations)} intersections")
+    print("Each intersection now has two timing recommendations:")
+    print("  1. 1:15pm - 2:45pm optimized from Phase Plan 61")
+    print("  2. 2:45pm - 6:45pm optimized from Phase Plan 64")
