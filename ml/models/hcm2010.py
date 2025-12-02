@@ -152,6 +152,9 @@ class HCM2010Optimizer:
         Returns:
             Dict mapping phases to green times
         """
+        if num_phases == 0:
+            return {}
+
         # Total lost time
         total_lost = self.lost_time_per_phase * num_phases
         
@@ -337,14 +340,34 @@ def extract_phase_movements(phase_labels: List[str]) -> Dict[str, List[str]]:
     """
     import re
     
+    # Standard NEMA 8-phase dual-ring mapping (fallback for numeric-only labels)
+    # Ring 1: Phases 1-4, Ring 2: Phases 5-8
+    STANDARD_PHASE_MOVEMENTS = {
+        '1': ['EBL'],           # Phase 1: EB Left
+        '2': ['WBT', 'WBR'],    # Phase 2: WB Through/Right
+        '3': ['NBL'],           # Phase 3: NB Left  
+        '4': ['SBT', 'SBR'],    # Phase 4: SB Through/Right
+        '5': ['WBL'],           # Phase 5: WB Left
+        '6': ['EBT', 'EBR'],    # Phase 6: EB Through/Right
+        '7': ['SBL'],           # Phase 7: SB Left
+        '8': ['NBT', 'NBR'],    # Phase 8: NB Through/Right
+    }
+    
     phase_movements = {}
     
     for label in phase_labels:
+        # Try to extract phase number for fallback
+        phase_num_match = re.match(r'^(\d+)', str(label).strip())
+        phase_num = phase_num_match.group(1) if phase_num_match else None
+        
         # Remove numeric prefix and spaces
-        cleaned = re.sub(r'^[\d\s]+', '', label.strip())
+        cleaned = re.sub(r'^[\d\s\.]+', '', str(label).strip())
         cleaned = cleaned.replace(' ', '').upper()
         
         if not cleaned or cleaned.lower() in ('not used', 'notused', 'offset'):
+            # No direction info - use standard NEMA mapping if we have phase number
+            if phase_num and phase_num in STANDARD_PHASE_MOVEMENTS:
+                phase_movements[label] = STANDARD_PHASE_MOVEMENTS[phase_num]
             continue
         
         movements = []
@@ -352,6 +375,9 @@ def extract_phase_movements(phase_labels: List[str]) -> Dict[str, List[str]]:
         # Extract direction
         direction_match = re.match(r'^(NB|SB|EB|WB)', cleaned)
         if not direction_match:
+            # No direction found - try standard mapping
+            if phase_num and phase_num in STANDARD_PHASE_MOVEMENTS:
+                phase_movements[label] = STANDARD_PHASE_MOVEMENTS[phase_num]
             continue
         
         direction = direction_match.group(1)
