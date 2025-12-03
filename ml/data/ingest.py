@@ -351,15 +351,15 @@ def ingest_timing_directory(directory: str) -> Dict[str, Any]:
 
 
 def ingest_all(
-    volume_dir: str = 'volume',
-    times_dir: str = 'times'
+    volume_dir: str = None,
+    times_dir: str = None
 ) -> Dict[str, Any]:
     """
     Ingest all data from volume and times directories.
     
     Args:
-        volume_dir: Path to volume directory
-        times_dir: Path to times directory
+        volume_dir: Path to volume directory (default: data/volume)
+        times_dir: Path to times directory (default: data/times)
         
     Returns:
         Dict with:
@@ -368,6 +368,15 @@ def ingest_all(
         - matched_intersections: List of intersection IDs with both volume and timing data
         - summary: Summary statistics
     """
+    # Default to project root data directories
+    if volume_dir is None:
+        # Find project root (parent of ml directory)
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        volume_dir = os.path.join(project_root, 'data', 'volume')
+    if times_dir is None:
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        times_dir = os.path.join(project_root, 'data', 'times')
+    
     volumes = ingest_volume_directory(volume_dir)
     timings = ingest_timing_directory(times_dir)
     

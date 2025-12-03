@@ -1,0 +1,183 @@
+{
+  "generated_at": "2025-12-03T01:11:42.790036",
+  "generator": "PMPlanOptimizer",
+  "plan_number": 61,
+  "plan_name": "Early PM",
+  "intersection_id": "102_Been",
+  "time_range": "13:15-14:45",
+  "current_timing": {
+    "cycle_length": 165.0,
+    "phase_greens": {
+      "1EBLT": 15.0,
+      "2WB": 89.0,
+      "4NB": 36.0,
+      "5WBLT": 15.0,
+      "6EB": 89.0,
+      "8SB": 36.0
+    },
+    "delay": 75.34,
+    "los": "E"
+  },
+  "improved_timing": {
+    "cycle_length": 148,
+    "phase_greens": {
+      "1EBLT": 10,
+      "2WB": 81,
+      "4NB": 34,
+      "5WBLT": 10,
+      "6EB": 81,
+      "8SB": 34
+    },
+    "delay": 66.93,
+    "los": "E"
+  },
+  "improvement": {
+    "delay_reduction_s": 8.409999999999997,
+    "delay_reduction_pct": 11.162728962038752,
+    "search_iterations": 5
+  },
+  "volumes_used": {
+    "NBL": 84.0,
+    "NBT": 85.39999999999998,
+    "NBR": 100.0,
+    "SBL": 73.39999999999998,
+    "SBT": 153.39999999999998,
+    "SBR": 0.0,
+    "EBL": 56.0,
+    "EBT": 1069.6,
+    "EBR": 109.39999999999998,
+    "WBL": 144.0,
+    "WBT": 1152.1999999999998,
+    "WBR": 213.39999999999998
+  },
+  "evaluation": {
+    "cycle_length_s": 148,
+    "phase_greens": {
+      "1EBLT": 10,
+      "2WB": 81,
+      "4NB": 34,
+      "5WBLT": 10,
+      "6EB": 81,
+      "8SB": 34
+    },
+    "yellow_times": {},
+    "red_clearance": {},
+    "per_lane": [
+      {
+        "movement": "NBL",
+        "volume_vph": 84.0,
+        "g_s": 34,
+        "g_over_C": 0.23,
+        "degree_of_saturation": 0.192,
+        "delay_s_per_veh": 46.9,
+        "LOS": "D",
+        "match_type": "direct"
+      },
+      {
+        "movement": "NBT",
+        "volume_vph": 85.39999999999998,
+        "g_s": 34,
+        "g_over_C": 0.23,
+        "degree_of_saturation": 0.196,
+        "delay_s_per_veh": 47.0,
+        "LOS": "D",
+        "match_type": "direct"
+      },
+      {
+        "movement": "NBR",
+        "volume_vph": 100.0,
+        "g_s": 34,
+        "g_over_C": 0.23,
+        "degree_of_saturation": 0.229,
+        "delay_s_per_veh": 47.6,
+        "LOS": "D",
+        "match_type": "direct"
+      },
+      {
+        "movement": "SBL",
+        "volume_vph": 73.39999999999998,
+        "g_s": 34,
+        "g_over_C": 0.23,
+        "degree_of_saturation": 0.168,
+        "delay_s_per_veh": 46.5,
+        "LOS": "D",
+        "match_type": "direct"
+      },
+      {
+        "movement": "SBT",
+        "volume_vph": 153.39999999999998,
+        "g_s": 34,
+        "g_over_C": 0.23,
+        "degree_of_saturation": 0.351,
+        "delay_s_per_veh": 50.0,
+        "LOS": "D",
+        "match_type": "direct"
+      },
+      {
+        "movement": "EBL",
+        "volume_vph": 56.0,
+        "g_s": 81,
+        "g_over_C": 0.547,
+        "degree_of_saturation": 0.054,
+        "delay_s_per_veh": 15.7,
+        "LOS": "B",
+        "match_type": "direct"
+      },
+      {
+        "movement": "EBT",
+        "volume_vph": 1069.6,
+        "g_s": 81,
+        "g_over_C": 0.547,
+        "degree_of_saturation": 1.029,
+        "delay_s_per_veh": 69.0,
+        "LOS": "E",
+        "match_type": "direct"
+      },
+      {
+        "movement": "EBR",
+        "volume_vph": 109.39999999999998,
+        "g_s": 81,
+        "g_over_C": 0.547,
+        "degree_of_saturation": 0.105,
+        "delay_s_per_veh": 16.3,
+        "LOS": "B",
+        "match_type": "direct"
+      },
+      {
+        "movement": "WBL",
+        "volume_vph": 144.0,
+        "g_s": 81,
+        "g_over_C": 0.547,
+        "degree_of_saturation": 0.138,
+        "delay_s_per_veh": 16.7,
+        "LOS": "B",
+        "match_type": "direct"
+      },
+      {
+        "movement": "WBT",
+        "volume_vph": 1152.1999999999998,
+        "g_s": 81,
+        "g_over_C": 0.547,
+        "degree_of_saturation": 1.108,
+        "delay_s_per_veh": 95.9,
+        "LOS": "F",
+        "match_type": "direct"
+      },
+      {
+        "movement": "WBR",
+        "volume_vph": 213.39999999999998,
+        "g_s": 81,
+        "g_over_C": 0.547,
+        "degree_of_saturation": 0.205,
+        "delay_s_per_veh": 17.5,
+        "LOS": "B",
+        "match_type": "direct"
+      }
+    ],
+    "intersection": {
+      "average_delay_s_per_veh": 66.93,
+      "LOS": "E",
+      "total_volume_vph": 3240.7999999999997
+    }
+  }
+}

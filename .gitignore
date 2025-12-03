@@ -5,6 +5,8 @@ pyvenv.cfg
 
 # Python bytecode
 __pycache__/
+__pycache__/*
+*/pycache__/
 *.py[cod]
 *$py.class
 *.so
