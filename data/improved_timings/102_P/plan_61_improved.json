@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-03T01:11:43.178300",
+  "generated_at": "2025-12-03T01:22:19.083523",
   "generator": "PMPlanOptimizer",
   "plan_number": 61,
   "plan_name": "Early PM",
@@ -19,22 +19,22 @@
     "los": "F"
   },
   "improved_timing": {
-    "cycle_length": 135,
+    "cycle_length": 150.5,
     "phase_greens": {
-      "1EBLT": 10,
-      "2WB": 25,
-      "3NB": 51,
-      "4SB": 39,
-      "5WBLT": 13,
-      "6EB": 55
+      "1EBLT": 14.0,
+      "2WB": 32.0,
+      "3NB": 53.0,
+      "4SB": 41.0,
+      "5WBLT": 19.0,
+      "6EB": 56.0
     },
-    "delay": 127.49,
+    "delay": 128.53,
     "los": "F"
   },
   "improvement": {
-    "delay_reduction_s": 1.7999999999999972,
-    "delay_reduction_pct": 1.3922190424626786,
-    "search_iterations": 10
+    "delay_reduction_s": 0.7599999999999909,
+    "delay_reduction_pct": 0.5878258179286804,
+    "search_iterations": 7
   },
   "volumes_used": {
     "NBL": 96.0,
@@ -51,14 +51,14 @@
     "WBR": 33.39999999999998
   },
   "evaluation": {
-    "cycle_length_s": 135,
+    "cycle_length_s": 150.5,
     "phase_greens": {
-      "1EBLT": 10,
-      "2WB": 25,
-      "3NB": 51,
-      "4SB": 39,
-      "5WBLT": 13,
-      "6EB": 55
+      "1EBLT": 14.0,
+      "2WB": 32.0,
+      "3NB": 53.0,
+      "4SB": 41.0,
+      "5WBLT": 19.0,
+      "6EB": 56.0
     },
     "yellow_times": {},
     "red_clearance": {},
@@ -66,79 +66,79 @@
       {
         "movement": "NBL",
         "volume_vph": 96.0,
-        "g_s": 51,
-        "g_over_C": 0.378,
-        "degree_of_saturation": 0.134,
-        "delay_s_per_veh": 27.9,
+        "g_s": 53.0,
+        "g_over_C": 0.352,
+        "degree_of_saturation": 0.143,
+        "delay_s_per_veh": 33.7,
         "LOS": "C",
         "match_type": "direct"
       },
       {
         "movement": "NBT",
         "volume_vph": 16.0,
-        "g_s": 51,
-        "g_over_C": 0.378,
-        "degree_of_saturation": 0.022,
-        "delay_s_per_veh": 26.4,
+        "g_s": 53.0,
+        "g_over_C": 0.352,
+        "degree_of_saturation": 0.024,
+        "delay_s_per_veh": 31.9,
         "LOS": "C",
         "match_type": "direct"
       },
       {
         "movement": "NBR",
         "volume_vph": 52.0,
-        "g_s": 51,
-        "g_over_C": 0.378,
-        "degree_of_saturation": 0.072,
-        "delay_s_per_veh": 27.1,
+        "g_s": 53.0,
+        "g_over_C": 0.352,
+        "degree_of_saturation": 0.078,
+        "delay_s_per_veh": 32.7,
         "LOS": "C",
         "match_type": "direct"
       },
       {
         "movement": "SBL",
         "volume_vph": 116.0,
-        "g_s": 39,
-        "g_over_C": 0.289,
-        "degree_of_saturation": 0.211,
-        "delay_s_per_veh": 37.2,
+        "g_s": 41.0,
+        "g_over_C": 0.272,
+        "degree_of_saturation": 0.224,
+        "delay_s_per_veh": 43.4,
         "LOS": "D",
         "match_type": "direct"
       },
       {
         "movement": "SBT",
         "volume_vph": 20.0,
-        "g_s": 39,
-        "g_over_C": 0.289,
-        "degree_of_saturation": 0.036,
-        "delay_s_per_veh": 34.6,
-        "LOS": "C",
+        "g_s": 41.0,
+        "g_over_C": 0.272,
+        "degree_of_saturation": 0.039,
+        "delay_s_per_veh": 40.4,
+        "LOS": "D",
         "match_type": "direct"
       },
       {
         "movement": "SBR",
         "volume_vph": 48.0,
-        "g_s": 39,
-        "g_over_C": 0.289,
-        "degree_of_saturation": 0.087,
-        "delay_s_per_veh": 35.3,
+        "g_s": 41.0,
+        "g_over_C": 0.272,
+        "degree_of_saturation": 0.093,
+        "delay_s_per_veh": 41.2,
         "LOS": "D",
         "match_type": "direct"
       },
       {
         "movement": "EBL",
         "volume_vph": 41.39999999999998,
-        "g_s": 55,
-        "g_over_C": 0.407,
-        "degree_of_saturation": 0.053,
-        "delay_s_per_veh": 24.4,
+        "g_s": 56.0,
+        "g_over_C": 0.372,
+        "degree_of_saturation": 0.059,
+        "delay_s_per_veh": 30.5,
         "LOS": "C",
         "match_type": "direct"
       },
       {
         "movement": "EBT",
         "volume_vph": 1133.4,
-        "g_s": 55,
-        "g_over_C": 0.407,
-        "degree_of_saturation": 1.464,
+        "g_s": 56.0,
+        "g_over_C": 0.372,
+        "degree_of_saturation": 1.603,
         "delay_s_per_veh": 150.0,
         "LOS": "F",
         "match_type": "direct"
@@ -146,29 +146,29 @@
       {
         "movement": "EBR",
         "volume_vph": 57.39999999999998,
-        "g_s": 55,
-        "g_over_C": 0.407,
-        "degree_of_saturation": 0.074,
-        "delay_s_per_veh": 24.6,
+        "g_s": 56.0,
+        "g_over_C": 0.372,
+        "degree_of_saturation": 0.081,
+        "delay_s_per_veh": 30.8,
         "LOS": "C",
         "match_type": "direct"
       },
       {
         "movement": "WBL",
         "volume_vph": 28.0,
-        "g_s": 25,
-        "g_over_C": 0.185,
-        "degree_of_saturation": 0.08,
-        "delay_s_per_veh": 45.9,
+        "g_s": 32.0,
+        "g_over_C": 0.213,
+        "degree_of_saturation": 0.069,
+        "delay_s_per_veh": 47.7,
         "LOS": "D",
         "match_type": "direct"
       },
       {
         "movement": "WBT",
         "volume_vph": 1013.4,
-        "g_s": 25,
-        "g_over_C": 0.185,
-        "degree_of_saturation": 2.88,
+        "g_s": 32.0,
+        "g_over_C": 0.213,
+        "degree_of_saturation": 2.508,
         "delay_s_per_veh": 150.0,
         "LOS": "F",
         "match_type": "direct"
@@ -176,16 +176,16 @@
       {
         "movement": "WBR",
         "volume_vph": 33.39999999999998,
-        "g_s": 25,
-        "g_over_C": 0.185,
-        "degree_of_saturation": 0.095,
-        "delay_s_per_veh": 46.2,
+        "g_s": 32.0,
+        "g_over_C": 0.213,
+        "degree_of_saturation": 0.083,
+        "delay_s_per_veh": 47.9,
         "LOS": "D",
         "match_type": "direct"
       }
     ],
     "intersection": {
-      "average_delay_s_per_veh": 127.49,
+      "average_delay_s_per_veh": 128.53,
       "LOS": "F",
       "total_volume_vph": 2655.0000000000005
     }

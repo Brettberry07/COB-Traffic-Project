@@ -214,36 +214,44 @@ class PMPlanOptimizer:
         # =================================================================
         # REALISTIC MINIMUM GREEN TIMES (based on MUTCD and engineering practice)
         # =================================================================
-        # Left turn phases (protected): 10-12s minimum for queue clearance
+        # Left turn phases (protected): Need adequate time for queue clearance
+        #   - Minimum 10s absolute
+        #   - Maximum 25% reduction from current (left turns are sized for demand)
         # Through movements: 15s minimum for pedestrian crossing
         # Minor street through: 12s minimum
-        # Right turn only: 10s minimum
         # =================================================================
-        MIN_GREEN_LEFT_TURN = 10.0   # Protected left turn minimum
+        MIN_GREEN_LEFT_TURN = 10.0   # Protected left turn absolute minimum
         MIN_GREEN_THROUGH = 15.0     # Major through movement minimum  
         MIN_GREEN_MINOR = 12.0       # Minor street/movement minimum
         MIN_GREEN_DEFAULT = 12.0     # Default minimum if phase type unknown
         MAX_GREEN = 90.0
         CLEARANCE_PER_PHASE = 5.5    # yellow + all-red
         
-        # Maximum reduction from current timing (don't cut more than 50%)
-        MAX_REDUCTION_PCT = 0.50
+        # Maximum reduction from current timing
+        # LEFT TURNS: Only 25% reduction (they're sized for queue clearance)
+        # THROUGH: Can reduce up to 40% (more flexibility)
+        MAX_REDUCTION_LEFT_TURN = 0.25
+        MAX_REDUCTION_THROUGH = 0.40
+        MAX_REDUCTION_DEFAULT = 0.35
         
         def get_min_green_for_phase(phase_label: str, current_green: float) -> float:
             """Determine minimum green based on phase type and current timing."""
             label_upper = str(phase_label).upper()
             
-            # Left turn phases (contain "LT")
+            # Left turn phases (contain "LT") - BE PROTECTIVE
             if 'LT' in label_upper:
                 base_min = MIN_GREEN_LEFT_TURN
+                max_reduction = MAX_REDUCTION_LEFT_TURN
             # Through phases (phases 2, 4, 6, 8 typically, or contain direction only)
             elif any(x in label_upper for x in ['NB', 'SB', 'EB', 'WB']) and 'LT' not in label_upper and 'RT' not in label_upper:
                 base_min = MIN_GREEN_THROUGH
+                max_reduction = MAX_REDUCTION_THROUGH
             else:
                 base_min = MIN_GREEN_DEFAULT
+                max_reduction = MAX_REDUCTION_DEFAULT
             
-            # Also enforce: don't reduce below 50% of current timing
-            floor_from_current = current_green * (1 - MAX_REDUCTION_PCT)
+            # Enforce: don't reduce below (100 - max_reduction)% of current timing
+            floor_from_current = current_green * (1 - max_reduction)
             
             return max(base_min, floor_from_current)
         
