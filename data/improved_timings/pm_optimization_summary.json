@@ -1,0 +1,346 @@
+{
+  "generated_at": "2025-12-03T01:22:19.158828",
+  "total_intersections": 10,
+  "plans_optimized": [
+    61,
+    64
+  ],
+  "intersections": {
+    "102_A": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 114.31,
+          "improved_delay": 93.31,
+          "improvement_s": 21.0,
+          "improvement_pct": 18.37109614206981,
+          "saved_path": "data/improved_timings/102_A/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 107.16,
+          "improved_delay": 82.77,
+          "improvement_s": 24.39,
+          "improvement_pct": 22.760358342665175,
+          "saved_path": "data/improved_timings/102_A/plan_64_improved.json"
+        }
+      }
+    },
+    "102_Been": {
+      "plans": {
+        "61": {
+          "current_los": "E",
+          "improved_los": "E",
+          "current_delay": 75.34,
+          "improved_delay": 67.21,
+          "improvement_s": 8.13000000000001,
+          "improvement_pct": 10.791080435359715,
+          "saved_path": "data/improved_timings/102_Been/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "E",
+          "current_delay": 81.72,
+          "improved_delay": 78.21,
+          "improvement_s": 3.510000000000005,
+          "improvement_pct": 4.2951541850220325,
+          "saved_path": "data/improved_timings/102_Been/plan_64_improved.json"
+        }
+      }
+    },
+    "102_C": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 121.02,
+          "improved_delay": 120.05,
+          "improvement_s": 0.9699999999999989,
+          "improvement_pct": 0.8015204098496107,
+          "saved_path": "data/improved_timings/102_C/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 107.55,
+          "improved_delay": 105.1,
+          "improvement_s": 2.450000000000003,
+          "improvement_pct": 2.2780102278010252,
+          "saved_path": "data/improved_timings/102_C/plan_64_improved.json"
+        }
+      }
+    },
+    "102_Elm": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 89.35,
+          "improved_delay": 81.72,
+          "improvement_s": 7.6299999999999955,
+          "improvement_pct": 8.539451594851702,
+          "saved_path": "data/improved_timings/102_Elm/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 91.51,
+          "improved_delay": 82.41,
+          "improvement_s": 9.100000000000009,
+          "improvement_pct": 9.944268385968755,
+          "saved_path": "data/improved_timings/102_Elm/plan_64_improved.json"
+        }
+      }
+    },
+    "102_Greenhouse": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 128.26,
+          "improved_delay": 126.59,
+          "improvement_s": 1.6699999999999875,
+          "improvement_pct": 1.302042725713385,
+          "saved_path": "data/improved_timings/102_Greenhouse/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 132.64,
+          "improved_delay": 131.44,
+          "improvement_s": 1.1999999999999886,
+          "improvement_pct": 0.9047044632086767,
+          "saved_path": "data/improved_timings/102_Greenhouse/plan_64_improved.json"
+        }
+      }
+    },
+    "102_I": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "E",
+          "current_delay": 95.79,
+          "improved_delay": 71.99,
+          "improvement_s": 23.80000000000001,
+          "improvement_pct": 24.846017329575123,
+          "saved_path": "data/improved_timings/102_I/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 98.25,
+          "improved_delay": 81.31,
+          "improvement_s": 16.939999999999998,
+          "improvement_pct": 17.241730279898213,
+          "saved_path": "data/improved_timings/102_I/plan_64_improved.json"
+        }
+      }
+    },
+    "102_J": {
+      "plans": {
+        "61": {
+          "current_los": "E",
+          "improved_los": "E",
+          "current_delay": 69.7,
+          "improved_delay": 55.85,
+          "improvement_s": 13.850000000000001,
+          "improvement_pct": 19.870875179340032,
+          "saved_path": "data/improved_timings/102_J/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "E",
+          "improved_los": "E",
+          "current_delay": 70.2,
+          "improved_delay": 61.34,
+          "improvement_s": 8.86,
+          "improvement_pct": 12.62108262108262,
+          "saved_path": "data/improved_timings/102_J/plan_64_improved.json"
+        }
+      }
+    },
+    "102_Moberly": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "E",
+          "current_delay": 87.0,
+          "improved_delay": 73.19,
+          "improvement_s": 13.810000000000002,
+          "improvement_pct": 15.873563218390807,
+          "saved_path": "data/improved_timings/102_Moberly/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "E",
+          "current_delay": 86.66,
+          "improved_delay": 64.94,
+          "improvement_s": 21.72,
+          "improvement_pct": 25.063466420493885,
+          "saved_path": "data/improved_timings/102_Moberly/plan_64_improved.json"
+        }
+      }
+    },
+    "102_P": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 129.29,
+          "improved_delay": 128.53,
+          "improvement_s": 0.7599999999999909,
+          "improvement_pct": 0.5878258179286804,
+          "saved_path": "data/improved_timings/102_P/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 119.76,
+          "improved_delay": 117.57,
+          "improvement_s": 2.190000000000012,
+          "improvement_pct": 1.8286573146292684,
+          "saved_path": "data/improved_timings/102_P/plan_64_improved.json"
+        }
+      }
+    },
+    "102_Walton": {
+      "plans": {
+        "61": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 101.17,
+          "improved_delay": 89.2,
+          "improvement_s": 11.969999999999999,
+          "improvement_pct": 11.831570623702678,
+          "saved_path": "data/improved_timings/102_Walton/plan_61_improved.json"
+        },
+        "64": {
+          "current_los": "F",
+          "improved_los": "F",
+          "current_delay": 97.05,
+          "improved_delay": 86.66,
+          "improvement_s": 10.39,
+          "improvement_pct": 10.705821741370428,
+          "saved_path": "data/improved_timings/102_Walton/plan_64_improved.json"
+        }
+      }
+    }
+  },
+  "aggregate_stats": {
+    "plan_61": {
+      "total_improvement_s": 103.59,
+      "count": 10,
+      "los_changes": [
+        {
+          "intersection": "102_A",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Been",
+          "from": "E",
+          "to": "E"
+        },
+        {
+          "intersection": "102_C",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Elm",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Greenhouse",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_I",
+          "from": "F",
+          "to": "E"
+        },
+        {
+          "intersection": "102_J",
+          "from": "E",
+          "to": "E"
+        },
+        {
+          "intersection": "102_Moberly",
+          "from": "F",
+          "to": "E"
+        },
+        {
+          "intersection": "102_P",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Walton",
+          "from": "F",
+          "to": "F"
+        }
+      ],
+      "avg_improvement_s": 10.359
+    },
+    "plan_64": {
+      "total_improvement_s": 100.75000000000001,
+      "count": 10,
+      "los_changes": [
+        {
+          "intersection": "102_A",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Been",
+          "from": "F",
+          "to": "E"
+        },
+        {
+          "intersection": "102_C",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Elm",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Greenhouse",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_I",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_J",
+          "from": "E",
+          "to": "E"
+        },
+        {
+          "intersection": "102_Moberly",
+          "from": "F",
+          "to": "E"
+        },
+        {
+          "intersection": "102_P",
+          "from": "F",
+          "to": "F"
+        },
+        {
+          "intersection": "102_Walton",
+          "from": "F",
+          "to": "F"
+        }
+      ],
+      "avg_improvement_s": 10.075000000000001
+    }
+  }
+}

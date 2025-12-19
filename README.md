@@ -1,205 +1,149 @@
-# Traffic Signal Timing ML System
+COB Traffic Project — Setup and Run Guide
+=========================================
 
-An offline batch ML system that recommends full traffic signal timing plans for intersections along Highway 102 in Bentonville, AR.
+This guide walks you through installing Python, setting up your environment, training the model, running analyses, and generating the final timing report. It is written for non‑programmers and uses simple, copy‑paste commands.
 
-## Overview
+Requirements
+------------
 
-This system uses historical traffic volume data and signal timing data to predict optimal timing plans that improve Level of Service (LOS). It implements multiple ML approaches and compares them against a HCM2010 deterministic baseline.
+- Windows 10 or 11
+- Internet access
+- Command Prompt or PowerShell
 
-## Quick Start
+------------------
+*1) Install Python*
+------------------
 
-### Prerequisites
+First, check if Python 3 is already installed:
 
-- Python 3.10+
-- pip
+```powershell
+py -V
+# or
+python --version
+```
 
-### Installation
+If you see a version (e.g., Python 3.11.x), continue. Otherwise install Python:
+- From Microsoft Store: search “Python 3.11” and install
+- Or download the Windows installer: https://www.python.org/downloads/
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd COB-Traffic-Project
+Make sure “Add Python to PATH” is checked during installation.
 
-# Install dependencies
+--------------------------------------------
+*2) Create and Activate a Virtual Environment*
+--------------------------------------------
+
+Open Command Prompt or PowerShell in the project folder (the one containing this README), then run:
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\activate
+# If the "py" launcher isn’t available, try:
+# python -m venv .venv
+# .\.venv\Scripts\activate
+```
+
+When activated, your prompt will start with `(.venv)`.
+
+--------------------------------------------
+*3) Install Project Dependencies*
+-------------------------------
+
+Install all required Python packages listed in requirements:
+
+```powershell
 pip install -r requirements.txt
 ```
 
-### Running the System
+--------------------------------------------
+*4) Train and Optimize PM Timing Plans*
+-------------------------------------
 
-```bash
-# 1. Ingest data
-cd ml/data && python ingest.py
+This step trains the model(s) and generates improved timing plans for the PM periods (Plan 61 and Plan 64). It reads data from the `data` folder and writes optimized plans into `data\improved_timings`.
 
-# 2. Preprocess data
-python preprocess.py
-
-# 3. Train models
-cd ../models && python train.py
-
-# 4. Generate predictions
-python predict.py
+```powershell
+python ml\models\train_pm_plans.py
 ```
 
-### Using Docker
+You should see:
+- Progress messages for loading/preprocessing data
+- Optimization steps for each intersection
+- A final summary and the path where improved timings are saved
 
-```bash
-# Build image
-docker build -t traffic-ml .
+--------------------------------------------
+*5) Run Volume Analysis (Notebook)*
+---------------------------------
 
-# Run predictions
-docker run -v $(pwd)/output:/app/output traffic-ml
+Option A — Open in VS Code (recommended):
+1. Open this project in VS Code.
+2. Install the “Python” and “Jupyter” extensions if prompted.
+3. Open the notebook: volume_analysis.ipynb.
+4. Select the Python interpreter from `.venv` when prompted.
+5. Run the cells from top to bottom.
+
+Option B — Run in your browser using Jupyter:
+
+```powershell
+pip install jupyter
+jupyter notebook
 ```
 
-## Project Structure
+Then open `volume_analysis.ipynb` in the browser tab that appears and run the cells top to bottom.
 
-```
-├── volume/                 # Volume (turning movement count) CSV files
-├── times/                  # Phase timing CSV files
-├── ml/
-│   ├── data/
-│   │   ├── ingest.py      # Data ingestion from CSV files
-│   │   └── preprocess.py  # Missing value handling, feature extraction
-│   ├── models/
-│   │   ├── hcm2010.py     # HCM2010 deterministic optimizer
-│   │   ├── train.py       # Model training pipeline
-│   │   └── predict.py     # Inference pipeline
-│   └── los_wrapper.py     # Wrapper around LOS.py
-├── tests/                  # Unit tests
-├── LOS.py                  # Level of Service calculations
-├── requirements.txt        # Python dependencies
-├── Dockerfile             # Container configuration
-└── README.md              # This file
-```
+--------------------------------------------
+*6) Run LOS Analysis (Notebook)*
+------------------------------
 
-## Data Formats
+This notebook evaluates Level of Service (LOS) before and after optimization.
 
-### Volume Files (volume/*.csv)
+Use the same approach as Step 5, but open and run: `LOS_analysis.ipynb`.
 
-15-minute turning movement counts:
+Notes:
+- The LOS engine lives in LOS.py and is used by the training/optimization pipeline.
+- If you re‑run optimization, re‑run this notebook to reflect updates.
 
-```csv
-DATE,TIME,INTID,NBL,NBT,NBR,SBL,SBT,SBR,EBL,EBT,EBR,WBL,WBT,WBR
-10/11/2025,="0000",6,0,11,0,23,9,5,1,39,*,2,44,*
+--------------------------------------------
+*7) Generate the Visual Timing Report*
+------------------------------------
+
+This compiles all improved timing plans into a single, easy‑to‑read HTML report grouped by intersection and plan, with color‑coded LOS and split changes.
+
+```powershell
+python generate_timing_report.py
 ```
 
-- TIME is in Excel escaped format `="HHMM"`
-- Missing values are marked with `*`
+The report is written to `timing_improvement_report.html`. Double‑click it in File Explorer or open it in your browser.
 
-### Timing Files (times/*.csv)
+Typical Workflow Summary
+------------------------
 
-Phase timing configurations:
+1. Setup once: Steps 1–3
+2. Whenever data changes:
+	 - Re‑run optimization: `python ml\models\train_pm_plans.py`
+	 - (Optional) Re‑run notebooks: `volume_analysis.ipynb`, `LOS_analysis.ipynb`
+	 - Regenerate report: `python generate_timing_report.py`
 
-```csv
-Phase,,1 EBLT,2WB,3NBLT,4SB,5WBLT,6 EB,7SBLT,8NB,Offset
-,25,15,77,15,33,15,77,17,31,125
-Yellow Change,,4,4.5,4,4.5,4,4.5,4,4.5,
-Red Clearence,,1,1,1,1,1,1,1,1,
-```
+Project Structure (key items)
+-----------------------------
 
-## Model Approaches
+- `data/` — Input data and outputs
+	- `times/` and `volume/` — Source CSVs for timing and volumes
+	- `improved_timings/` — JSON outputs from optimization (by intersection/plan)
+- `ml/models/train_pm_plans.py` — Main training/optimization entry point for PM plans
+- `LOS.py` — LOS calculator used by the pipeline and analysis
+- `volume_analysis.ipynb` — Explore and visualize traffic volumes
+- `LOS_analysis.ipynb` — Evaluate LOS before/after improvements
+- `generate_timing_report.py` — Builds the final HTML timing report
 
-### 1. HCM2010 Deterministic Baseline
+Troubleshooting
+---------------
 
-Uses Webster's formula for optimal cycle length and proportional green split allocation based on critical volume ratios.
+- "'py' is not recognized" — Use `python` instead of `py` in the commands.
+- "python is not recognized" — Reinstall Python and ensure “Add Python to PATH” is checked, then restart the terminal.
+- "pip is not recognized" — Try `python -m pip install -r requirements.txt`.
+- Execution policy blocks activation (PowerShell): run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, then activate again.
+- Jupyter/Notebooks won’t open — Ensure `pip install jupyter` ran in the active `.venv` and that VS Code uses the `.venv` interpreter.
 
-### 2. Gradient Boosted Trees
+Need Help?
+----------
 
-Predicts green splits for each phase using engineered features:
-- Temporal features (hour, day of week, weekend)
-- Rolling volume statistics
-- Historical timing patterns
-
-### 3. Sequence Model
-
-Uses sliding window approach to capture temporal patterns in traffic volumes for timing prediction.
-
-### 4. Hybrid ML + Optimization
-
-Combines ML predictions with HCM2010 constraints:
-1. ML model predicts initial green splits
-2. HCM2010 optimizer applies safety constraints
-3. LOS validation ensures plan improvement
-
-## Output Format
-
-Predictions are output as NDJSON with one recommendation per line:
-
-```json
-{
-  "intersection_id": "102_A",
-  "timestamp": "2025-10-11T08:00:00",
-  "cycle_length": 120.0,
-  "phases": [
-    {"phase": "1 EBLT", "green": 30.0, "yellow": 4.0, "red_clearance": 1.0}
-  ],
-  "recommended_change_score": 65.5,
-  "notes": ["Estimated delay reduction: 15.5%", "LOS improvement: D -> C"],
-  "is_valid": true,
-  "los_before": "D",
-  "los_after": "C",
-  "delay_before": 45.2,
-  "delay_after": 38.2
-}
-```
-
-## Validation and Safety
-
-All recommended plans are validated against:
-
-1. **Cycle length constraints**: 60-180 seconds
-2. **Minimum green times**: 7 seconds (pedestrian safety)
-3. **Maximum green times**: 90 seconds
-4. **Yellow time minimums**: 3 seconds
-5. **Red clearance minimums**: 1 second
-
-If a plan violates any constraint or worsens LOS by more than 5%, the system falls back to the HCM2010 baseline.
-
-## Extending the System
-
-### Adding New Models
-
-1. Create a new class in `ml/models/` inheriting from `TimingModel`
-2. Implement `fit()`, `predict()`, `save()`, and `load()` methods
-3. Add the model to the training pipeline in `train.py`
-
-### Adding New Features
-
-1. Modify `VolumePreprocessor` in `ml/data/preprocess.py`
-2. Add feature extraction logic in the appropriate method
-3. Update the model training to use new features
-
-### Adding New Intersections
-
-1. Add volume CSV to `volume/` directory
-2. Add timing CSV to `times/` directory
-3. Files must follow the naming convention: `102_<name>.csv`
-
-## Running Tests
-
-```bash
-# Run all tests
-pytest tests/ -v
-
-# Run specific test file
-pytest tests/test_los.py -v
-
-# Run with coverage
-pytest tests/ --cov=ml --cov-report=html
-```
-
-## LOS Reference
-
-HCM2010 Level of Service thresholds for signalized intersections:
-
-| LOS | Delay (sec/veh) | Description |
-|-----|-----------------|-------------|
-| A   | ≤ 10           | Free flow   |
-| B   | 10-20          | Stable flow |
-| C   | 20-35          | Stable flow |
-| D   | 35-55          | Approaching unstable |
-| E   | 55-80          | Unstable    |
-| F   | > 80           | Forced flow |
-
-## License
-
-Copyright (c) 2025. All rights reserved.
+If you get stuck, share the console output and we can assist with next steps. Feel free to reach me at: brettberry07@gmail.com

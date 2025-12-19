@@ -1,0 +1,1964 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Traffic Signal Timing Improvements Report</title>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; color: #333; }
+            .container { max-width: 1200px; margin: 0 auto; background-color: white; padding: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.1); border-radius: 8px; }
+            h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+            h2 { color: #34495e; margin-top: 40px; border-left: 5px solid #3498db; padding-left: 15px; }
+            h3 { color: #7f8c8d; margin-top: 25px; }
+            .plan-card { border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; margin-bottom: 30px; background-color: #fff; }
+            .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+            .metric-box { padding: 15px; border-radius: 6px; text-align: center; color: white; }
+            .metric-label { font-size: 0.9em; opacity: 0.9; margin-bottom: 5px; }
+            .metric-value { font-size: 1.8em; font-weight: bold; }
+            .metric-sub { font-size: 0.8em; opacity: 0.8; }
+            
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95em; }
+            th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+            th { background-color: #f8f9fa; font-weight: 600; color: #555; }
+            tr:hover { background-color: #f9f9f9; }
+            
+            .diff-positive { color: #27ae60; font-weight: bold; }
+            .diff-negative { color: #c0392b; font-weight: bold; }
+            .diff-neutral { color: #7f8c8d; }
+            
+            .summary-stats { display: flex; gap: 20px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 6px; }
+            .stat-item { flex: 1; text-align: center; }
+            .stat-val { font-size: 1.4em; font-weight: bold; color: #2c3e50; }
+            .stat-lbl { font-size: 0.85em; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+            
+            .los-badge { display: inline-block; width: 30px; height: 30px; line-height: 30px; text-align: center; border-radius: 50%; color: white; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Traffic Signal Timing Optimization Report</h1>
+            <p>Generated on 2025-12-19 09:54</p>
+    <h2>Intersection: 102_A</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">114.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">93.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">18.4%</div>
+                        <div class="metric-sub">-21.0s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">161.0s &rarr; 161.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">11</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1 EBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>77.0</td>
+                            <td>85.0</td>
+                            <td class="diff-positive">+8.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3NBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4SB</td>
+                            <td>33.0</td>
+                            <td>29.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6 EB</td>
+                            <td>77.0</td>
+                            <td>89.0</td>
+                            <td class="diff-positive">+12.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7SBLT</td>
+                            <td>17.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8NB</td>
+                            <td>31.0</td>
+                            <td>25.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">107.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">82.8s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">22.8%</div>
+                        <div class="metric-sub">-24.4s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">161.0s &rarr; 161.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">10</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1 EBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>77.0</td>
+                            <td>83.0</td>
+                            <td class="diff-positive">+6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3NBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4SB</td>
+                            <td>33.0</td>
+                            <td>31.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6 EB</td>
+                            <td>77.0</td>
+                            <td>89.0</td>
+                            <td class="diff-positive">+12.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7SBLT</td>
+                            <td>17.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8NB</td>
+                            <td>31.0</td>
+                            <td>25.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_Been</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">75.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">67.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">10.8%</div>
+                        <div class="metric-sub">-8.1s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">165.0s &rarr; 148s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">3</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>15.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>89.0</td>
+                            <td>81.0</td>
+                            <td class="diff-negative">-8.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4NB</td>
+                            <td>36.0</td>
+                            <td>32.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>15.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>89.0</td>
+                            <td>81.0</td>
+                            <td class="diff-negative">-8.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8SB</td>
+                            <td>36.0</td>
+                            <td>32.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">81.7s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">78.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">4.3%</div>
+                        <div class="metric-sub">-3.5s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">165.0s &rarr; 148s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">3</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>15.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>89.0</td>
+                            <td>80.0</td>
+                            <td class="diff-negative">-9.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4NB</td>
+                            <td>36.0</td>
+                            <td>34.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>15.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>89.0</td>
+                            <td>81.0</td>
+                            <td class="diff-negative">-8.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8SB</td>
+                            <td>36.0</td>
+                            <td>32.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_C</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">121.0s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">120.0s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">0.8%</div>
+                        <div class="metric-sub">-1.0s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">150.0s &rarr; 150.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">9</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>15.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>53.0</td>
+                            <td>37.0</td>
+                            <td class="diff-negative">-16.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3SB</td>
+                            <td>42.0</td>
+                            <td>33.0</td>
+                            <td class="diff-negative">-9.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4NB</td>
+                            <td>30.0</td>
+                            <td>58.0</td>
+                            <td class="diff-positive">+28.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>53.0</td>
+                            <td>55.0</td>
+                            <td class="diff-positive">+2.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">107.5s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">105.1s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">2.3%</div>
+                        <div class="metric-sub">-2.5s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">150.0s &rarr; 142s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">14</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>15.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>53.0</td>
+                            <td>32.0</td>
+                            <td class="diff-negative">-21.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3SB</td>
+                            <td>42.0</td>
+                            <td>27.0</td>
+                            <td class="diff-negative">-15.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4NB</td>
+                            <td>30.0</td>
+                            <td>62.0</td>
+                            <td class="diff-positive">+32.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>15.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>53.0</td>
+                            <td>52.0</td>
+                            <td class="diff-negative">-1.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_Elm</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">89.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">81.7s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">8.5%</div>
+                        <div class="metric-sub">-7.6s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">150.3s &rarr; 150.3s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">26</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>29.0</td>
+                            <td>23.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>45.0</td>
+                            <td>27.0</td>
+                            <td class="diff-negative">-18.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3SBLT</td>
+                            <td>33.0</td>
+                            <td>67.0</td>
+                            <td class="diff-positive">+34.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4(Not used)</td>
+                            <td>33.0</td>
+                            <td>23.0</td>
+                            <td class="diff-negative">-10.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>74.0</td>
+                            <td>90.0</td>
+                            <td class="diff-positive">+16.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8SBRT</td>
+                            <td>66.0</td>
+                            <td>50.0</td>
+                            <td class="diff-negative">-16.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">91.5s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">82.4s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">9.9%</div>
+                        <div class="metric-sub">-9.1s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">150.3s &rarr; 150.3s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">26</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>29.0</td>
+                            <td>23.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>45.0</td>
+                            <td>27.0</td>
+                            <td class="diff-negative">-18.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3SBLT</td>
+                            <td>33.0</td>
+                            <td>67.0</td>
+                            <td class="diff-positive">+34.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4(Not used)</td>
+                            <td>33.0</td>
+                            <td>23.0</td>
+                            <td class="diff-negative">-10.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>74.0</td>
+                            <td>90.0</td>
+                            <td class="diff-positive">+16.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8SBRT</td>
+                            <td>66.0</td>
+                            <td>50.0</td>
+                            <td class="diff-negative">-16.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_Greenhouse</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">128.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">126.6s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">1.3%</div>
+                        <div class="metric-sub">-1.7s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">132.125s &rarr; 119s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">1</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1.0</td>
+                            <td>20.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2.0</td>
+                            <td>65.0</td>
+                            <td>59.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4.0</td>
+                            <td>20.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5.0</td>
+                            <td>15.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-1.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6.0</td>
+                            <td>70.0</td>
+                            <td>63.0</td>
+                            <td class="diff-negative">-7.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8.0</td>
+                            <td>35.0</td>
+                            <td>32.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">132.6s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">131.4s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">0.9%</div>
+                        <div class="metric-sub">-1.2s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">132.125s &rarr; 119s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">1</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1.0</td>
+                            <td>20.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2.0</td>
+                            <td>65.0</td>
+                            <td>59.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4.0</td>
+                            <td>20.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5.0</td>
+                            <td>15.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-1.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6.0</td>
+                            <td>70.0</td>
+                            <td>63.0</td>
+                            <td class="diff-negative">-7.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8.0</td>
+                            <td>35.0</td>
+                            <td>32.0</td>
+                            <td class="diff-negative">-3.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_I</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">95.8s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">72.0s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">24.8%</div>
+                        <div class="metric-sub">-23.8s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">160.5s &rarr; 160.5s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">14</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1WBLT</td>
+                            <td>20.0</td>
+                            <td>16.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2EB</td>
+                            <td>71.0</td>
+                            <td>84.0</td>
+                            <td class="diff-positive">+13.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3NB</td>
+                            <td>19.0</td>
+                            <td>15.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4SB</td>
+                            <td>30.0</td>
+                            <td>25.0</td>
+                            <td class="diff-negative">-5.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5EBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6WB</td>
+                            <td>76.0</td>
+                            <td>88.0</td>
+                            <td class="diff-positive">+12.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7SBLT</td>
+                            <td>17.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8NBLT</td>
+                            <td>32.0</td>
+                            <td>26.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">98.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">81.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">17.2%</div>
+                        <div class="metric-sub">-16.9s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">160.5s &rarr; 160.5s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">14</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1WBLT</td>
+                            <td>20.0</td>
+                            <td>16.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2EB</td>
+                            <td>71.0</td>
+                            <td>83.0</td>
+                            <td class="diff-positive">+12.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3NB</td>
+                            <td>19.0</td>
+                            <td>15.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4SB</td>
+                            <td>30.0</td>
+                            <td>26.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5EBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6WB</td>
+                            <td>76.0</td>
+                            <td>90.0</td>
+                            <td class="diff-positive">+14.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7SBLT</td>
+                            <td>17.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8NBLT</td>
+                            <td>32.0</td>
+                            <td>24.0</td>
+                            <td class="diff-negative">-8.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_J</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">69.7s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">55.9s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">19.9%</div>
+                        <div class="metric-sub">-13.9s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">163.0s &rarr; 163.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">11</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1NBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2SB</td>
+                            <td>34.0</td>
+                            <td>42.0</td>
+                            <td class="diff-positive">+8.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3EBLT</td>
+                            <td>22.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4WB</td>
+                            <td>66.0</td>
+                            <td>66.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5SBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6NB</td>
+                            <td>34.0</td>
+                            <td>42.0</td>
+                            <td class="diff-positive">+8.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7WBLT</td>
+                            <td>26.0</td>
+                            <td>20.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8EB</td>
+                            <td>62.0</td>
+                            <td>64.0</td>
+                            <td class="diff-positive">+2.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">70.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">61.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">12.6%</div>
+                        <div class="metric-sub">-8.9s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">163.0s &rarr; 163.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">16</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1NBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2SB</td>
+                            <td>34.0</td>
+                            <td>30.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3EBLT</td>
+                            <td>22.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4WB</td>
+                            <td>66.0</td>
+                            <td>78.0</td>
+                            <td class="diff-positive">+12.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5SBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6NB</td>
+                            <td>34.0</td>
+                            <td>44.0</td>
+                            <td class="diff-positive">+10.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7WBLT</td>
+                            <td>26.0</td>
+                            <td>20.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8EB</td>
+                            <td>62.0</td>
+                            <td>62.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_Moberly</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">87.0s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">73.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">15.9%</div>
+                        <div class="metric-sub">-13.8s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">161.0s &rarr; 161.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">29</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1WBLT</td>
+                            <td>24.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2EB</td>
+                            <td>62.0</td>
+                            <td>84.0</td>
+                            <td class="diff-positive">+22.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3SBLT</td>
+                            <td>20.0</td>
+                            <td>16.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4WB</td>
+                            <td>34.0</td>
+                            <td>22.0</td>
+                            <td class="diff-negative">-12.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5EBLT</td>
+                            <td>29.0</td>
+                            <td>23.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6WB</td>
+                            <td>57.0</td>
+                            <td>35.0</td>
+                            <td class="diff-negative">-22.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7NBLT</td>
+                            <td>20.0</td>
+                            <td>44.0</td>
+                            <td class="diff-positive">+24.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8SB</td>
+                            <td>34.0</td>
+                            <td>38.0</td>
+                            <td class="diff-positive">+4.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">86.7s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #FFC107">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">E</div>
+                        <div class="metric-sub">64.9s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">25.1%</div>
+                        <div class="metric-sub">-21.7s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">161.0s &rarr; 161.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">20</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1WBLT</td>
+                            <td>24.0</td>
+                            <td>18.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2EB</td>
+                            <td>62.0</td>
+                            <td>84.0</td>
+                            <td class="diff-positive">+22.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3SBLT</td>
+                            <td>20.0</td>
+                            <td>16.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4WB</td>
+                            <td>34.0</td>
+                            <td>22.0</td>
+                            <td class="diff-negative">-12.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5EBLT</td>
+                            <td>29.0</td>
+                            <td>23.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6WB</td>
+                            <td>57.0</td>
+                            <td>73.0</td>
+                            <td class="diff-positive">+16.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7NBLT</td>
+                            <td>20.0</td>
+                            <td>16.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8SB</td>
+                            <td>34.0</td>
+                            <td>28.0</td>
+                            <td class="diff-negative">-6.0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_P</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">129.3s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">128.5s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">0.6%</div>
+                        <div class="metric-sub">-0.8s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">150.5s &rarr; 150.5s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">7</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>50.0</td>
+                            <td>32.0</td>
+                            <td class="diff-negative">-18.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3NB</td>
+                            <td>31.0</td>
+                            <td>53.0</td>
+                            <td class="diff-positive">+22.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4SB</td>
+                            <td>41.0</td>
+                            <td>41.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>19.0</td>
+                            <td>19.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>56.0</td>
+                            <td>56.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">119.8s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">117.6s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">1.8%</div>
+                        <div class="metric-sub">-2.2s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">150.5s &rarr; 150.5s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">18</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1EBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2WB</td>
+                            <td>50.0</td>
+                            <td>30.0</td>
+                            <td class="diff-negative">-20.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3NB</td>
+                            <td>31.0</td>
+                            <td>27.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4SB</td>
+                            <td>41.0</td>
+                            <td>69.0</td>
+                            <td class="diff-positive">+28.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5WBLT</td>
+                            <td>19.0</td>
+                            <td>19.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6EB</td>
+                            <td>56.0</td>
+                            <td>56.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            <h2>Intersection: 102_Walton</h2>
+            <div class="plan-card">
+                <h3>Plan 61 - Early PM (13:15-14:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">101.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">89.2s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">11.8%</div>
+                        <div class="metric-sub">-12.0s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">161.0s &rarr; 161.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">17</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1NBLT</td>
+                            <td>17.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2SB</td>
+                            <td>39.0</td>
+                            <td>29.0</td>
+                            <td class="diff-negative">-10.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3EBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4WB</td>
+                            <td>66.0</td>
+                            <td>84.0</td>
+                            <td class="diff-positive">+18.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5SBLT</td>
+                            <td>16.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6NB</td>
+                            <td>40.0</td>
+                            <td>46.0</td>
+                            <td class="diff-positive">+6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7WBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8EB</td>
+                            <td>69.0</td>
+                            <td>69.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="plan-card">
+                <h3>Plan 64 - PM Peak (14:45-18:45)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Current LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">97.0s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #F44336">
+                        <div class="metric-label">Improved LOS</div>
+                        <div class="metric-value">F</div>
+                        <div class="metric-sub">86.7s Delay</div>
+                    </div>
+                    <div class="metric-box" style="background-color: #3498db">
+                        <div class="metric-label">Improvement</div>
+                        <div class="metric-value">10.7%</div>
+                        <div class="metric-sub">-10.4s / veh</div>
+                    </div>
+                </div>
+                
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-val">161.0s &rarr; 161.0s</div>
+                        <div class="stat-lbl">Cycle Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val">13</div>
+                        <div class="stat-lbl">Optimization Iterations</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Current Split (s)</th>
+                            <th>New Split (s)</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            
+                        <tr>
+                            <td>1NBLT</td>
+                            <td>17.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>2SB</td>
+                            <td>39.0</td>
+                            <td>34.0</td>
+                            <td class="diff-negative">-5.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>3EBLT</td>
+                            <td>18.0</td>
+                            <td>14.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>4WB</td>
+                            <td>66.0</td>
+                            <td>79.0</td>
+                            <td class="diff-positive">+13.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>5SBLT</td>
+                            <td>16.0</td>
+                            <td>12.0</td>
+                            <td class="diff-negative">-4.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>6NB</td>
+                            <td>40.0</td>
+                            <td>46.0</td>
+                            <td class="diff-positive">+6.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>7WBLT</td>
+                            <td>15.0</td>
+                            <td>13.0</td>
+                            <td class="diff-negative">-2.0</td>
+                        </tr>
+                
+                        <tr>
+                            <td>8EB</td>
+                            <td>69.0</td>
+                            <td>69.0</td>
+                            <td class="diff-neutral">0</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </body>
+    </html>
+    
